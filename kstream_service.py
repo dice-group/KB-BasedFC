@@ -20,6 +20,7 @@ class KnowledgeStream(object):
 	name = 'kstream'
 
 	HOME = abspath(expanduser('~/git/FC/knowledgestream/data/'))
+
 	if not exists(HOME):
 		print 'Data directory not found: %s' % HOME
 		print 'Download data per instructions on:'
@@ -52,6 +53,12 @@ class KnowledgeStream(object):
 	_int64 = np.int64
 	_float = np.float
 
+	# load knowledge graph
+	G = Graph.reconstruct(PATH, SHAPE, sym=True)  # undirected
+	assert np.all(G.csr.indices >= 0)
+
+	# relational similarity
+	relsim = np.load(RELSIMPATH)
 
 	# ================= KNOWLEDGE STREAM ALGORITHM ============
 
@@ -129,47 +136,42 @@ class KnowledgeStream(object):
 		df['softmaxscore'] = df[['sid', 'score']].groupby(by=['sid'], as_index=False).transform(softmax)
 		return df
 
-	@rpc
-	def stream(self):   # must be modified later to take triple
+	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
+	def stream(self, sid, pid, oid):
 		# ensure input file and output directory is valid.
 		outdir = abspath(expanduser('~/git/FC/knowledgestream/output'))
 		assert exists(outdir)
 		dataset = abspath(expanduser('~/git/FC/knowledgestream/datasets/sample.csv'))
-		assert exists(dataset)
-		log.info('Dataset: {}'.format(basename(dataset)))
+		# assert exists(dataset)
+		# log.info('Dataset: {}'.format(basename(dataset)))
 		log.info('Output dir: {}'.format(outdir))
 
 		# read data
 		df = pd.read_table(dataset, sep=',', header=0)
 		log.info('Read data: {} {}'.format(df.shape, basename(dataset)))
-		spo_df = df.dropna(axis=0, subset=['sid', 'pid', 'oid'])
+		spo_df = df.dropna(axis=0, subset=['sid', 'pid', 'oid'])	# for dropping the rows with missing sid or pid or oid values
 		log.info('Note: Found non-NA records: {}'.format(spo_df.shape))
 		df = spo_df[['sid', 'pid', 'oid']].values
 		subs, preds, objs = df[:, 0].astype(self._int), df[:, 1].astype(self._int), df[:, 2].astype(self._int)
 
-		# load knowledge graph
-		G = Graph.reconstruct(self.PATH, self.SHAPE, sym=True)  # undirected
-		assert np.all(G.csr.indices >= 0)
-
-		# relational similarity
-		relsim = np.load(self.RELSIMPATH)
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
 
 		# execute
 		base = splitext(basename(dataset))[0]
 		t1 = time()
+
 		# KNOWLEDGE STREAM (KS)
 		# compute min. cost flow
-		log.info('Computing KS for {} triples..'.format(spo_df.shape[0]))
+		log.info('Computing KS for triple')
 		with warnings.catch_warnings():
 			warnings.simplefilter("ignore")
 			outjson = join(outdir, 'out_kstream_{}_{}.json'.format(base, self.DATE))
 			outcsv = join(outdir, 'out_kstream_{}_{}.csv'.format(base, self.DATE))
-			mincostflows, times = self.compute_mincostflow(G, relsim, subs, preds, objs, outjson)
-			# save the results
+			mincostflows, times = self.compute_mincostflow(self.G, self.relsim, sid, pid, oid, outjson)
 			spo_df['score'] = mincostflows
 			spo_df['time'] = times
 			spo_df = self.normalize(spo_df)
 			spo_df.to_csv(outcsv, sep=',', header=True, index=False)
 			log.info('* Saved results: %s' % outcsv)
 			log.info('Mincostflow computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
-		return 'kstream service completed'
+		return json.dumps({'FC value': spo_df['softmaxscore']})
