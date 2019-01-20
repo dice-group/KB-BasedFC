@@ -62,7 +62,7 @@ class KnowledgeStream(object):
 
 	# ================= KNOWLEDGE STREAM ALGORITHM ============
 
-	def compute_mincostflow(self, G, relsim, subs, preds, objs, flowfile):
+	def compute_mincostflow(self, G, relsim, sid, pid, oid):
 		"""
         Parameters:
         -----------
@@ -99,79 +99,48 @@ class KnowledgeStream(object):
 		indegsim = weighted_degree(G.indeg_vec, weight=self.WTFN)
 		specificity_wt = indegsim[G.targets]  # specificity
 		relations = (G.csr.indices - G.targets) / G.N
-		mincostflows, times = [], []
-		with open(flowfile, 'w', 0) as ff:
-			for idx, (s, p, o) in enumerate(zip(subs, preds, objs)):
-				s, p, o = [int(x) for x in (s, p, o)]
-				ts = time()
-				print '{}. Working on {} .. '.format(idx + 1, (s, p, o)),
-				sys.stdout.flush()
 
-				# set weights
-				relsimvec = np.array(relsim[p, :])  # specific to predicate p
-				relsim_wt = relsimvec[relations]
-				G.csr.data = np.multiply(relsim_wt, specificity_wt)
+		s, p, o = [int(x) for x in (sid, pid, oid)]
+		ts = time()
+		print '{}. Working on {} .. '.format(1, (s, p, o)),
+		sys.stdout.flush()
 
-				# compute
-				mcflow = succ_shortest_path(
-					G, cost_vec, s, p, o, return_flow=False, npaths=5
-				)
-				mincostflows.append(mcflow.flow)
-				ff.write(json.dumps(mcflow.stream) + '\n')
-				tend = time()
-				times.append(tend - ts)
-				print 'mincostflow: {:.5f}, #paths: {}, time: {:.2f}s.'.format(
-					mcflow.flow, len(mcflow.stream['paths']), tend - ts
-				)
+		# set weights
+		relsimvec = np.array(relsim[p, :])  # specific to predicate p
+		relsim_wt = relsimvec[relations]
+		G.csr.data = np.multiply(relsim_wt, specificity_wt)
 
-				# reset state of the graph
-				np.copyto(G.csr.data, G_bak['data'])
-				np.copyto(G.csr.indices, G_bak['indices'])
-				np.copyto(G.csr.indptr, G_bak['indptr'])
-				np.copyto(cost_vec, cost_vec_bak)
-		return mincostflows, times
+		# compute
+		mcflow = succ_shortest_path(
+			G, cost_vec, s, p, o, return_flow=False, npaths=5
+		)
+		mincostflow = mcflow.flow
+		tend = time()
+		times = tend - ts
+		print 'mincostflow: {:.5f}, #paths: {}, time: {:.2f}s.'.format(
+			mcflow.flow, len(mcflow.stream['paths']), tend - ts
+		)
 
-	def normalize(self, df):
-		softmax = lambda x: np.exp(x) / float(np.exp(x).sum())
-		df['softmaxscore'] = df[['sid', 'score']].groupby(by=['sid'], as_index=False).transform(softmax)
-		return df
+		# reset state of the graph
+		np.copyto(G.csr.data, G_bak['data'])
+		np.copyto(G.csr.indices, G_bak['indices'])
+		np.copyto(G.csr.indptr, G_bak['indptr'])
+		np.copyto(cost_vec, cost_vec_bak)
+		return mincostflow, times
 
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, sid, pid, oid):
-		# ensure input file and output directory is valid.
-		outdir = abspath(expanduser('~/git/FC/knowledgestream/output'))
-		assert exists(outdir)
-		dataset = abspath(expanduser('~/git/FC/knowledgestream/datasets/sample.csv'))
-		# assert exists(dataset)
-		# log.info('Dataset: {}'.format(basename(dataset)))
-		log.info('Output dir: {}'.format(outdir))
 
-		# read data
-		df = pd.read_table(dataset, sep=',', header=0)
-		log.info('Read data: {} {}'.format(df.shape, basename(dataset)))
-		spo_df = df.dropna(axis=0, subset=['sid', 'pid', 'oid'])	# for dropping the rows with missing sid or pid or oid values
-		log.info('Note: Found non-NA records: {}'.format(spo_df.shape))
-		df = spo_df[['sid', 'pid', 'oid']].values
-		subs, preds, objs = df[:, 0].astype(self._int), df[:, 1].astype(self._int), df[:, 2].astype(self._int)
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_mincostflow
 
-		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
-
-		# execute
-		base = splitext(basename(dataset))[0]
 		t1 = time()
 
-		# KNOWLEDGE STREAM (KS)
-		# compute min. cost flow
 		log.info('Computing KS for triple')
 		with warnings.catch_warnings():
 			warnings.simplefilter("ignore")
-			outjson = join(outdir, 'out_kstream_{}_{}.json'.format(base, self.DATE))
-			outcsv = join(outdir, 'out_kstream_{}_{}.csv'.format(base, self.DATE))
-			mincostflows, times = self.compute_mincostflow(self.G, self.relsim, sid, pid, oid, outjson)
-			spo_df['score'] = mincostflows
-			spo_df['time'] = times
-			spo_df = self.normalize(spo_df)
-			spo_df.to_csv(outcsv, sep=',', header=True, index=False)
-			log.info('* Saved results: %s' % outcsv)
+			# compute min. cost flow
+			mincostflows, times = self.compute_mincostflow(self.G, self.relsim, sid, pid, oid)
+			# spo_df = self.normalize(spo_df)
+
 			log.info('Mincostflow computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
-		return json.dumps({'FC value': spo_df['softmaxscore']})
+		return json.dumps({'FC value': mincostflows})
