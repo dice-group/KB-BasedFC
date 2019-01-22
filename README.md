@@ -9,7 +9,7 @@ Run the following command in order to setup the environment:<br>
 ```pip install -r requirements.txt```
 
 # Data
-Download data from the following URL http://carl.cs.indiana.edu/data/fact-checking/data.zip and decompress it inside `knowledgestream` directory.
+Download data from the following URL http://carl.cs.indiana.edu/data/fact-checking/data.zip and decompress it inside `KB-BasedFC` directory.
 
 # System requirements
 
