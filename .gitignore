@@ -8,3 +8,4 @@ dist/
 knowledgestream.egg-info/
 output/
 data.zip
+*.class
