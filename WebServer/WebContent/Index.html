@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Fact Checking</title>
+</head>
+<body>
+<h1>Fact Checking</h1>
+<form name="fc" method="post" action="s_p_o">
+  Enter Subject:<br>
+  <input type="text" name="subject" id="subject">
+  <br>
+  Enter Predicate:<br>
+  <input type="text" name="predicate" id="predicate">
+  <br>
+  Enter Object:<br>
+  <input type="text" name="object" id="object">
+  <br><br>
+  <select id="algorithm">
+  <option value="KStream">KStream</option>
+  <option value="KLinker">KLinker</option>
+  </select>
+<br><br>
+  <input type="submit" value="Submit">
+</form>
+</body>
+</html>
