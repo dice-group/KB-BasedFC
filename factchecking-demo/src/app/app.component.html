@@ -1,0 +1,32 @@
+<div class="example-container">
+    <mat-form-field class="example-full-width" la>
+      <input matInput placeholder="Subject" [(ngModel)]="subjectURI" [value]="subjectURI">
+      <mat-hint>Enter a subject uri</mat-hint>
+    </mat-form-field>
+  
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Predicate" [(ngModel)]="predicateURI" [value]="predicateURI">
+      <mat-hint>Enter a predicate uri</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field class="example-full-width">
+      <input matInput placeholder="Object" [(ngModel)]="objectURI" [value]="objectURI">
+      <mat-hint>Enter a object uri</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>FC Algorithm</mat-label>
+      <mat-select>
+        <mat-option *ngFor="let algorithm of algorithms" [value]="algorithm.value">
+          {{algorithm.viewValue}}
+        </mat-option>
+      </mat-select>
+      <mat-hint>Select any algorithm</mat-hint>
+    </mat-form-field>
+
+    <div class="example-button-row">
+      <button mat-raised-button color="primary" (click)="submitData()">Submit</button>
+      <button mat-raised-button color="primary" (click)="resetEverything()">Reset</button>
+    </div>
+  </div>
+  
