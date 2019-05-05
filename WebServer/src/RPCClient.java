@@ -11,7 +11,7 @@ public class RPCClient {
 	private Connection connection;
     private Channel channel;
     private static final String EXCHANGE_NAME = "nameko-rpc";
-    private String routingKey = "kstream.stream";
+    private String routingKey = "klinker.stream";
     private String replyQueueName;
 
     public RPCClient() throws IOException, TimeoutException {
@@ -38,7 +38,7 @@ public class RPCClient {
 
         System.out.println("Triple sent to the queue!");
         channel.basicPublish(EXCHANGE_NAME, routingKey, props, message.getBytes("UTF-8"));
-        
+
 
         final BlockingQueue<String> response = new ArrayBlockingQueue<String>(1);
 
@@ -54,7 +54,7 @@ public class RPCClient {
 
         return response.take();
     }
-    
+
     public void close() throws IOException {
         connection.close();
     }
