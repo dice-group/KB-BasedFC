@@ -63,7 +63,7 @@ class KnowledgeLinker(object):
 
 	# ================= KNOWLEDGE LINKER ALGORITHM ============
 
-	def compute_klinker(G, sid, pid, oid):
+	def compute_klinker(self, G, sid, pid, oid):
 		"""
 		Parameters:
 		-----------
@@ -80,7 +80,7 @@ class KnowledgeLinker(object):
 			nodes, shortest path in terms of relation sequence, and times taken.
 		"""
 		# set weights
-		indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
+		indegsim = weighted_degree(G.indeg_vec, weight=self.WTFN).reshape((1, G.N))
 		indegsim = indegsim.ravel()
 		targets = G.csr.indices % G.N
 		specificity_wt = indegsim[targets] # specificity
@@ -112,8 +112,8 @@ class KnowledgeLinker(object):
 		log.info('')
 		return scores, paths, rpaths, times
 
-	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def stream(self, sid, pid, oid):
+	@rpc  # Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
+	def linker(self, sid, pid, oid):
 
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_klinker
 
@@ -126,4 +126,4 @@ class KnowledgeLinker(object):
 			scores, paths, rpaths, times = self.compute_klinker(self.G, sid, pid, oid)
 
 			log.info('KLinker computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
-		return json.dumps({'FC value': scores})
+		return json.dumps({'FC value': paths})
