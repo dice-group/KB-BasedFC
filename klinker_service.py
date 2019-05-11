@@ -12,11 +12,15 @@ from os.path import expanduser, abspath, exists, join, basename, splitext
 from datetime import date
 from datastructures.rgraph import Graph, weighted_degree
 
+
+# OUR METHODS
+from algorithms.klinker.closure import closure
+
 class KnowledgeLinker(object):
 
 	name = 'klinker'
 
-	HOME = abspath(expanduser('~/git/FC/KB-BasedFC/data/'))
+	HOME = abspath(expanduser('./data/'))
 
 	if not exists(HOME):
 		print 'Data directory not found: %s' % HOME
@@ -58,10 +62,9 @@ class KnowledgeLinker(object):
 	relsim = np.load(RELSIMPATH)
 
 
+	# ================= KNOWLEDGE LINKER ALGORITHM ============
 
-    # ================= KNOWLEDGE LINKER ALGORITHM ============
-
-	def compute_klinker(G, subs, preds, objs):
+	def compute_klinker(self, G, sid, pid, oid):
 		"""
 		Parameters:
 		-----------
@@ -78,10 +81,10 @@ class KnowledgeLinker(object):
 			nodes, shortest path in terms of relation sequence, and times taken.
 		"""
 		# set weights
-		indegsim = weighted_degree(G.indeg_vec, weight=WTFN).reshape((1, G.N))
+		indegsim = weighted_degree(G.indeg_vec, weight=self.WTFN).reshape((1, G.N))
 		indegsim = indegsim.ravel()
 		targets = G.csr.indices % G.N
-		specificity_wt = indegsim[targets] # specificity
+		specificity_wt = indegsim[targets]  # specificity
 		G.csr.data = specificity_wt.copy()
 
 		# back up
@@ -91,32 +94,26 @@ class KnowledgeLinker(object):
 
 		# compute closure
 		scores, paths, rpaths, times = [], [], [], []
-		print '{}. Working on {}..'.format(idx+1, (s, p, o)),
-		ts = time()
-		rp = closure(G, s, p, o, kind='metric', linkpred=True)
-		tend = time()
-		print 'time: {:.2f}s'.format(tend - ts)
-		times.append(tend - ts)
-		scores.append(rp.score)
-		paths.append(rp.path)
-		rpaths.append(rp.relational_path)
+		for idx, (s, p, o) in enumerate(zip(sid, pid, oid)):
+			print '{}. Working on {}..'.format(idx + 1, (s, p, o)),
+			ts = time()
+			rp = closure(G, s, p, o, kind='metric', linkpred=True)
+			tend = time()
+			print 'time: {:.2f}s'.format(tend - ts)
+			times.append(tend - ts)
+			scores.append(rp.score)
+			paths.append(rp.path)
+			rpaths.append(rp.relational_path)
 
-		# reset graph
-		G.csr.data = data.copy()
-		G.csr.indices = indices.copy()
-		G.csr.indptr = indptr.copy()
-		sys.stdout.flush()
+			# reset graph
+			G.csr.data = data.copy()
+			G.csr.indices = indices.copy()
+			G.csr.indptr = indptr.copy()
+			sys.stdout.flush()
 		log.info('')
 		return scores, paths, rpaths, times
 
-	def normalize(df):
-		softmax = lambda x: np.exp(x) / float(np.exp(x).sum())
-		df['softmaxscore'] = df[['sid','score']].groupby(by=['sid'], as_index=False).transform(softmax)
-		return df
-
-
-
-    @rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
+    	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, sid, pid, oid):
 
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_klinker
@@ -126,7 +123,8 @@ class KnowledgeLinker(object):
 		log.info('Computing KL for triple')
 		with warnings.catch_warnings():
 			warnings.simplefilter("ignore")
-			# TODO: compute klinker
+
+			# compute klinker
 			scores, paths, rpaths, times = self.compute_klinker(self.G, sid, pid, oid)
 
 			log.info('KLinker computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
