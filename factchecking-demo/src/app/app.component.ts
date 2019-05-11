@@ -14,9 +14,9 @@ export interface Algorithm {
 })
 export class AppComponent {
   
-  title = 'factchecking-demo';
-  apiRoot: String = 'http://localhost:8081';
-  url = `${this.apiRoot}/Web_Server/s_p_o/`;
+  title = 'Fact Checking based on Knowledge Graph';
+  apiRoot: String = '';
+  url = `${this.apiRoot}/s_p_o`;
   subjectURI = '';
   predicateURI = '';
   objectURI = '';
@@ -31,7 +31,8 @@ export class AppComponent {
   algorithms: Algorithm[] = [
     {value: 'kstream', viewValue: 'Knowledge Stream'},
     {value: 'relklinker', viewValue: 'Relational Knowledge Linker'},
-    {value: 'klinker', viewValue: 'Knowledge Linker'}
+    {value: 'klinker', viewValue: 'Knowledge Linker'},
+    {value: 'all', viewValue: 'All of the above'}
   ];
 
   /**
@@ -60,7 +61,6 @@ export class AppComponent {
    * @param myJSON string
    */
   sendToApi(myJSON: string) {
-    this.resetEverything();
     const promise = new Promise((resolve, reject) => {
       console.log('Send Request to: ' + this.url);
       this.http.post(this.url, myJSON)

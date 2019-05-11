@@ -1,4 +1,5 @@
 <div class="example-container">
+    <mat-toolbar color="primary">{{title}}</mat-toolbar>
     <mat-form-field class="example-full-width" la>
       <input matInput placeholder="Subject" [(ngModel)]="subjectURI" [value]="subjectURI">
       <mat-hint>Enter a subject uri</mat-hint>
@@ -28,5 +29,7 @@
       <button mat-raised-button color="primary" (click)="submitData()">Submit</button>
       <button mat-raised-button color="primary" (click)="resetEverything()">Reset</button>
     </div>
+    
+    <app-results></app-results>
   </div>
   

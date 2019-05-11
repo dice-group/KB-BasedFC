@@ -9,10 +9,14 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import {MatCardModule} from '@angular/material/card';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import { ResultsComponent } from './results/results.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ResultsComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +27,9 @@ import { HttpClientModule } from '@angular/common/http';
     MatInputModule,
     MatSelectModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatCardModule,
+    MatToolbarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
