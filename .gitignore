@@ -11,3 +11,5 @@ data.zip
 *.class
 *.classpath
 *.project
+venv/
+.idea/
