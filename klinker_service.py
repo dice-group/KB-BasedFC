@@ -19,7 +19,7 @@ class KnowledgeLinker(object):
 
 	name = 'klinker'
 
-	HOME = abspath(expanduser('~/git/FC/KB-BasedFC/data/'))
+	HOME = abspath(expanduser('./data/'))
 
 	if not exists(HOME):
 		print 'Data directory not found: %s' % HOME
@@ -83,7 +83,7 @@ class KnowledgeLinker(object):
 		indegsim = weighted_degree(G.indeg_vec, weight=self.WTFN).reshape((1, G.N))
 		indegsim = indegsim.ravel()
 		targets = G.csr.indices % G.N
-		specificity_wt = indegsim[targets] # specificity
+		specificity_wt = indegsim[targets]  # specificity
 		G.csr.data = specificity_wt.copy()
 
 		# back up
@@ -93,27 +93,27 @@ class KnowledgeLinker(object):
 
 		# compute closure
 		scores, paths, rpaths, times = [], [], [], []
-		s, p, o = [int(x) for x in (sid, pid, oid)]
-		print '{}. Working on {}..'.format(1, (s, p, o)),
-		ts = time()
-		rp = closure(G, s, p, o, kind='metric', linkpred=True)
-		tend = time()
-		print 'time: {:.2f}s'.format(tend - ts)
-		times.append(tend - ts)
-		scores.append(rp.score)
-		paths.append(rp.path)
-		rpaths.append(rp.relational_path)
+		for idx, (s, p, o) in enumerate(zip(sid, pid, oid)):
+			print '{}. Working on {}..'.format(idx + 1, (s, p, o)),
+			ts = time()
+			rp = closure(G, s, p, o, kind='metric', linkpred=True)
+			tend = time()
+			print 'time: {:.2f}s'.format(tend - ts)
+			times.append(tend - ts)
+			scores.append(rp.score)
+			paths.append(rp.path)
+			rpaths.append(rp.relational_path)
 
-		# reset graph
-		G.csr.data = data.copy()
-		G.csr.indices = indices.copy()
-		G.csr.indptr = indptr.copy()
-		sys.stdout.flush()
+			# reset graph
+			G.csr.data = data.copy()
+			G.csr.indices = indices.copy()
+			G.csr.indptr = indptr.copy()
+			sys.stdout.flush()
 		log.info('')
 		return scores, paths, rpaths, times
 
 	@rpc  # Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def linker(self, sid, pid, oid):
+	def stream(self, sid, pid, oid):
 
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_klinker
 
@@ -126,4 +126,4 @@ class KnowledgeLinker(object):
 			scores, paths, rpaths, times = self.compute_klinker(self.G, sid, pid, oid)
 
 			log.info('KLinker computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
-		return json.dumps({'FC value': paths})
+		return json.dumps({'FC value': scores})
