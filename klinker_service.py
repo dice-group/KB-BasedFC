@@ -12,6 +12,7 @@ from os.path import expanduser, abspath, exists, join, basename, splitext
 from datetime import date
 from datastructures.rgraph import Graph, weighted_degree
 
+
 # OUR METHODS
 from algorithms.klinker.closure import closure
 
@@ -112,7 +113,7 @@ class KnowledgeLinker(object):
 		log.info('')
 		return scores, paths, rpaths, times
 
-	@rpc  # Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
+    @rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, sid, pid, oid):
 
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_klinker
@@ -122,6 +123,7 @@ class KnowledgeLinker(object):
 		log.info('Computing KL for triple')
 		with warnings.catch_warnings():
 			warnings.simplefilter("ignore")
+
 			# compute klinker
 			scores, paths, rpaths, times = self.compute_klinker(self.G, sid, pid, oid)
 
