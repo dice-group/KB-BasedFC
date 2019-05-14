@@ -19,7 +19,7 @@ class KnowledgeStream(object):
 
 	name = 'kstream'
 
-	HOME = abspath(expanduser('~/Documents/project2/KB-BasedFC/data/'))
+	HOME = abspath(expanduser('~/Documents/project/KB-BasedFC/data/'))
 
 	if not exists(HOME):
 		print 'Data directory not found: %s' % HOME
