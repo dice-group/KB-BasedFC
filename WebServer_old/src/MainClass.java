@@ -5,13 +5,11 @@ public class MainClass {
 	private String value1 = "";
     
 	
-	public void mainmethod(String data){
+	public void CallToMicroservice(String data){
 		// TODO Auto-generated method stub
-		
 		try {
-			System.out.println("In Main3:  " + data);
+			//System.out.println("In Main:  " + data);
 			RPCClient client = new RPCClient();
-			System.out.println("In Main2");
 			String result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
 			System.out.println(result);
 			value1 = result;
@@ -28,10 +26,12 @@ public class MainClass {
 		}
 	}
 	
-	public String getResult()
+	public String getResults()
 	{ 
 		return value1;
 	}
+
+	
 
 
 }
