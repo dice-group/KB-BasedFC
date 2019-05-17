@@ -10,3 +10,4 @@ data.zip
 *.class
 *.classpath
 *.project
+factchecking-demo/node_modules/
