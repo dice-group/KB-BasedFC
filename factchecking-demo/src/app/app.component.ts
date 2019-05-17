@@ -16,7 +16,7 @@ export class AppComponent {
   
   title = 'Fact Checking based on Knowledge Graph';
   apiRoot: String = '';
-  url = `${this.apiRoot}/s_p_o`;
+  url = `${this.apiRoot}/WebServer/s_p_o`;
   subjectURI = '';
   predicateURI = '';
   objectURI = '';
