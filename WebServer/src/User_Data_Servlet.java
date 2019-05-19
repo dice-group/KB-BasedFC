@@ -8,12 +8,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 
 import java.util.logging.Logger;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Servlet implementation class User_Data_Servlet
@@ -21,7 +20,7 @@ import org.json.JSONObject;
 @WebServlet("/s_p_o")
 public class User_Data_Servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static String true_false_value = "";
+	private static String result = "";
 	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
 
 	/**
@@ -65,29 +64,28 @@ public class User_Data_Servlet extends HttpServlet {
 		
 		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
 		
-		int taskId = jObject.getInt("taskid");
-		String subject = jObject.getString("subject");
-		String predicate = jObject.getString("predicate");
-		String object = jObject.getString("object");
-		String algorithm = jObject.getString("algorithm");
+		Fact fact = new Fact();
 		
-		LOGGER.info("Extracted values " + taskId + "," + subject + "," + predicate + "," + object + "," + algorithm);
+		fact.setTaskId(jObject.getInt("taskid"));
+		fact.setSubject(jObject.getString("subject"));
+		fact.setPredicate(jObject.getString("predicate"));
+		fact.setObject(jObject.getString("object"));
+		fact.setAlgorithm(jObject.getString("algorithm"));
+		
+		LOGGER.info("Extracted values " + fact.getTaskId() + "," + fact.getSubject() + "," + fact.getPredicate() + "," + fact.getObject() + "," + fact.getAlgorithm());
 		
 		MessageForm message = new MessageForm();
 		
 		LOGGER.info("Sub, Pred, Obj sent to API component");
 		
-		MessageForm.sendData(subject, predicate, object);
+		message.sendData(fact);
 		
-		true_false_value = message.getResponse();
-		
-		LOGGER.info("Value " + true_false_value + " returned from microservice");
+		LOGGER.info("Extracted truth score " + fact.getTruthValue() + " from the result");
 		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("name", true_false_value);
-		out.print(jsonObject);
+		ObjectMapper mapper = new ObjectMapper();
+		out.print(mapper.writeValueAsString(fact));
 	}
 }

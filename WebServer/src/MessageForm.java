@@ -6,16 +6,15 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 public class MessageForm {
-	private static String simplifiedData;
-	private static String response = "";
 	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
 
-	public static void sendData(String subjectUri, String predicateUri, String objectUri) {
+	public void sendData(Fact fact) {
 
+		String result = "";
 		int x =  generateRandomNumber();
 		int num = Math.abs(x);
 		String date = getDate();
-		simplifiedData = String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#type> <http://www.w3.org/%s-rdf-syntax-ns#Statement> .\n" +
+		String simplifiedData = String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#type> <http://www.w3.org/%s-rdf-syntax-ns#Statement> .\n" +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#subject> <%s> .\n" +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#predicate> <%s> .\n" +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#object> <%s> .\n"
@@ -24,18 +23,20 @@ public class MessageForm {
 				, date
 				, num
 				, date
-				, subjectUri
+				, fact.getSubject()
 				, num
 				, date
-				, predicateUri
+				, fact.getPredicate()
 				, num
 				, date
-				, objectUri);
+				, fact.getObject());
 
 		try {
 			RPCClient client = new RPCClient();
 			LOGGER.info("Sending " + simplifiedData + " to microservice");
-			response = client.call(simplifiedData);
+//			result = client.call(simplifiedData);
+			result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
+			LOGGER.info("Result " + result + " received from microservice");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,26 +47,27 @@ public class MessageForm {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		fact.setTruthValue(extractTruthValue(result));
 	}
 
-	public static int generateRandomNumber()
+	private int generateRandomNumber()
 	{
 		Random randomno = new Random();
 		int value = randomno.nextInt();
 		return value;
 	}
 
-	public static String getDate()
+	private String getDate()
 	{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		LocalDateTime now = LocalDateTime.now();
 		String date = dtf.format(now);
 		return date;
 	}
-
-	public String getResponse()
-	{ 
-		return response;
+	
+	// This method should implemented to extract FC value from microservice result in ISWC format
+	private double extractTruthValue(String result) {
+		return 0.0;
 	}
 
 }
