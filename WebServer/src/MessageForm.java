@@ -32,7 +32,6 @@ public class MessageForm {
 				, date
 				, objectUri);
 
-		
 		try {
 			RPCClient client = new RPCClient();
 			LOGGER.info("Sending " + simplifiedData + " to microservice");

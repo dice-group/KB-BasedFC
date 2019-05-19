@@ -2,6 +2,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +12,9 @@ import org.json.JSONObject;
 
 import java.util.logging.Logger;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Servlet implementation class User_Data_Servlet
  */
@@ -19,28 +23,38 @@ public class User_Data_Servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String true_false_value = "";
 	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
-	
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public User_Data_Servlet() {
 		super();
 		// TODO Auto-generated constructor stub
-		LOGGER.info("Logger Name: "+ LOGGER.getName());
+		LOGGER.info("Logger Name: " + LOGGER.getName());
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		// response.getWriter().append("Served at: ").append(request.getContextPath());
+		// PrintWriter out = response.getWriter();
+		// response.setContentType("application/json");
+		// response.setCharacterEncoding("UTF-8");
+		// out.print(true_false_value);
+		// out.flush();
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		// TODO Auto-generated method stub
 
 		BufferedReader reader = request.getReader();
@@ -69,6 +83,11 @@ public class User_Data_Servlet extends HttpServlet {
 		
 		LOGGER.info("Value " + true_false_value + " returned from microservice");
 		
-		PrintWriter pw = response.getWriter();
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("name", true_false_value);
+		out.print(jsonObject);
 	}
 }
