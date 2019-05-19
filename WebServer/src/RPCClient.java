@@ -22,14 +22,11 @@ public class RPCClient {
         channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, "topic", true);
         replyQueueName = channel.queueDeclare().getQueue();
-        channel.queueBind(replyQueueName, EXCHANGE_NAME, replyQueueName);
-        System.out.println("entred RPC");
-        
+        channel.queueBind(replyQueueName, EXCHANGE_NAME, replyQueueName);        
     }
 
     public String call(String message) throws IOException, TimeoutException, InterruptedException {
         final String corrId = UUID.randomUUID().toString();
-        System.out.println("Entered the method");
         AMQP.BasicProperties props = new AMQP.BasicProperties
                 .Builder()
                 .correlationId(corrId)

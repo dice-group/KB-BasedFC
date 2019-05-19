@@ -1,71 +1,69 @@
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Random;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 public class MessageForm {
 	private static String simplifiedData;
 	private static String response = "";
-	
-	//Constructor
-	public MessageForm()
-	{}
-	
+	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
+
 	public static void sendData(String subjectUri, String predicateUri, String objectUri) {
+
+		int x =  generateRandomNumber();
+		int num = Math.abs(x);
+		String date = getDate();
+		simplifiedData = String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#type> <http://www.w3.org/%s-rdf-syntax-ns#Statement> .\n" +
+				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#subject> <%s> .\n" +
+				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#predicate> <%s> .\n" +
+				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#object> <%s> .\n"
+				, num
+				, date
+				, date
+				, num
+				, date
+				, subjectUri
+				, num
+				, date
+				, predicateUri
+				, num
+				, date
+				, objectUri);
+
 		
-		  int x =  gtn();
-		  int num = Math.abs(x);
-		  String dates = getDate();
-		  simplifiedData = String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#type> <http://www.w3.org/%s-rdf-syntax-ns#Statement> .\n" +
-	                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#subject> <%s> .\n" +
-	                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#predicate> <%s> .\n" +
-	                "<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#object> <%s> .\n"
-	                , num
-	                , dates
-	                , dates
-	                , num
-	                , dates
-	                , subjectUri
-	                , num
-	                , dates
-	                , predicateUri
-	                , num
-	                , dates
-	                , objectUri);
-		 System.out.println("this is the data in message form: " + simplifiedData);
-		 
-		 /*Calling the CallToMicroservice and passing "simplifiedData" which
-		 is in ISWC format to the micro-service. */
-		 MainClass obj = new MainClass();
-		 obj.mainmethod(simplifiedData);
-		 
-		 /*Getting the response form the MainClass 
-		 in order to pass it to User_Data_Servlet.java class */
-		 response = obj.getResult();
-		 //System.out.println("Response is: " + response);
-		
+		try {
+			RPCClient client = new RPCClient();
+			LOGGER.info("Sending " + simplifiedData + " to microservice");
+			response = client.call(simplifiedData);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
-	//Function to generate random number
-	public static int gtn()
+
+	public static int generateRandomNumber()
 	{
 		Random randomno = new Random();
-	    int value = randomno.nextInt();
+		int value = randomno.nextInt();
 		return value;
 	}
-	
-	//Function to get current date
+
 	public static String getDate()
 	{
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		LocalDateTime now = LocalDateTime.now();
-		String dates = dtf.format(now);
-		return dates;
+		String date = dtf.format(now);
+		return date;
 	}
-	
-	//Get Function to get the (truth or false) value
+
 	public String getResponse()
 	{ 
 		return response;
