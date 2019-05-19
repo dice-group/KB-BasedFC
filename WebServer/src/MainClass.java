@@ -9,9 +9,9 @@ public class MainClass {
 		// TODO Auto-generated method stub
 		
 		try {
-			System.out.println("In Main3:  " + data);
+			//System.out.println("In Main3:  " + data);
 			RPCClient client = new RPCClient();
-			System.out.println("In Main2");
+			//System.out.println("In Main2");
 			String result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
 			System.out.println(result);
 			value1 = result;

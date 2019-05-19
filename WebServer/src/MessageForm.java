@@ -34,7 +34,7 @@ public class MessageForm {
 	                , num
 	                , dates
 	                , objectUri);
-		 System.out.println("this is the data in message form: " + simplifiedData);
+		 //System.out.println("this is the data in message form: " + simplifiedData);
 		 
 		 /*Calling the CallToMicroservice and passing "simplifiedData" which
 		 is in ISWC format to the micro-service. */
