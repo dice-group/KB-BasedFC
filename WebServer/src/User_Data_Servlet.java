@@ -57,6 +57,8 @@ public class User_Data_Servlet extends HttpServlet {
 		// TODO Auto-generated method stub
 
 		BufferedReader reader = request.getReader();
+		ObjectMapper mapper = new ObjectMapper();
+		PrintWriter out = response.getWriter();
 		
 		JSONObject jObject = new JSONObject(reader.readLine());
 		
@@ -64,14 +66,8 @@ public class User_Data_Servlet extends HttpServlet {
 		
 		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
 		
-		Fact fact = new Fact();
-		
-		fact.setTaskId(jObject.getInt("taskid"));
-		fact.setSubject(jObject.getString("subject"));
-		fact.setPredicate(jObject.getString("predicate"));
-		fact.setObject(jObject.getString("object"));
-		fact.setAlgorithm(jObject.getString("algorithm"));
-		
+		Fact fact = mapper.readValue(jObject.toString(), Fact.class);
+
 		LOGGER.info("Extracted values " + fact.getTaskId() + "," + fact.getSubject() + "," + fact.getPredicate() + "," + fact.getObject() + "," + fact.getAlgorithm());
 		
 		MessageForm message = new MessageForm();
@@ -83,9 +79,7 @@ public class User_Data_Servlet extends HttpServlet {
 		LOGGER.info("Extracted truth score " + fact.getTruthValue() + " from the result");
 		
 		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-
-		ObjectMapper mapper = new ObjectMapper();
 		out.print(mapper.writeValueAsString(fact));
+		out.close();
 	}
 }

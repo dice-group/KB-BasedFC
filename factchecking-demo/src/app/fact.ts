@@ -1,8 +1,8 @@
 export class Fact {
-    id: number;
+    taskId: number;
     subject: string;
     predicate: string;
     object: string;
     algorithm: string;
-    truthScore: number
+    truthValue: number
 }

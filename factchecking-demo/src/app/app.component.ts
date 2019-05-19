@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Fact } from './fact';
 
 
 export interface Algorithm {
@@ -51,7 +52,7 @@ export class AppComponent {
   submitData() {
     let obj;
     this.taskId++;
-    obj = {'taskid': this.taskId, 'subject': this.subjectURI, 'predicate': this.predicateURI, 'object': this.objectURI, 'algorithm': this.algorithm}
+    obj = {'taskId': this.taskId, 'subject': this.subjectURI, 'predicate': this.predicateURI, 'object': this.objectURI, 'algorithm': this.algorithm}
     const myJSON = JSON.stringify(obj);
     this.sendToApi(myJSON);
   }
@@ -68,7 +69,11 @@ export class AppComponent {
         .then(
           res => {
             try {
-              console.log(res.toString);
+              console.log(JSON.stringify(res));
+              let fact: Fact = JSON.parse(JSON.stringify(res));
+              console.log(fact.taskId);
+              console.log(fact.subject);
+              console.log(fact.truthValue);
               resolve();
             } catch (e) {
               console.log('Exception: ' + e);

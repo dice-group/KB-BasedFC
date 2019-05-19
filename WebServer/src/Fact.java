@@ -1,12 +1,25 @@
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 public class Fact implements Serializable {
 
+	@JsonProperty("taskId")
 	private int taskId;
+	
+	@JsonProperty("subject")
 	private String subject;
+	
+	@JsonProperty("predicate")
 	private String predicate;
+	
+	@JsonProperty("object")
 	private String object;
+	
+	@JsonProperty("algorithm")
 	private String algorithm;
+	
+	@JsonProperty("truthValue")
 	private double truthValue;
 	
 	public int getTaskId() {
