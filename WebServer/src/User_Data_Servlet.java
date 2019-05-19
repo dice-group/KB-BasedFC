@@ -1,4 +1,5 @@
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -7,6 +8,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.json.JSONObject;
+
+import java.util.logging.Logger;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,80 +22,72 @@ import org.json.JSONObject;
 public class User_Data_Servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String true_false_value = "";
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public User_Data_Servlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public User_Data_Servlet() {
+		super();
+		// TODO Auto-generated constructor stub
+		LOGGER.info("Logger Name: " + LOGGER.getName());
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		//PrintWriter out = response.getWriter();
-		//response.setContentType("application/json");
-        //response.setCharacterEncoding("UTF-8");
-       // out.print(true_false_value);
-       // out.flush();
+		// response.getWriter().append("Served at: ").append(request.getContextPath());
+		// PrintWriter out = response.getWriter();
+		// response.setContentType("application/json");
+		// response.setCharacterEncoding("UTF-8");
+		// out.print(true_false_value);
+		// out.flush();
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub			 
-				
-				//System.out.println("reached the user_data_servlet");
-				//Below we get the subject, predicate and object from the Http Request
-				//and store it to different variables.
-				String subject = request.getParameter("subject");
-				String predicate = request.getParameter("predicate");
-				String object = request.getParameter("object");
-				//System.out.println("data has been stored in their respective strings");
-				System.out.println("subject is:" + subject);
-				System.out.println("predicate is:" + predicate);
-				System.out.println("object is:" + object);
-				//calls the method "sendData" from the class "MessageForm"
-				//and passes the subject, predicate and object as parameters.
-				MessageForm message = new MessageForm();
-				MessageForm.sendData(subject, predicate, object);
-			
-				//pw.print(" subject is: " + subject);
-				//pw.print(" Predicate is: " + predicate);
-//pw.print(" object is: " + object);
-				
-//Once we get the response (the truth or false value) from the microservice
-//then we retrieve that value in this class and pass it as response.
-true_false_value = message.getResponse();
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-/*try {
-JSONObject jObj = new JSONObject(true_false_value);
-response.setContentType("application/json");
-response.getWriter().write("The Microservice response is : " + jObj);
-} catch (JSONException e) {
-// TODO Auto-generated catch block
-e.printStackTrace();
-}*/
+		// TODO Auto-generated method stub
 
-response.setContentType("application/json");
-PrintWriter out = response.getWriter();
+		BufferedReader reader = request.getReader();
+		
+		JSONObject jObject = new JSONObject(reader.readLine());
+		
+		reader.close();
+		
+		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
+		
+		int taskId = jObject.getInt("taskid");
+		String subject = jObject.getString("subject");
+		String predicate = jObject.getString("predicate");
+		String object = jObject.getString("object");
+		String algorithm = jObject.getString("algorithm");
+		
+		LOGGER.info("Extracted values " + taskId + "," + subject + "," + predicate + "," + object + "," + algorithm);
+		
+		MessageForm message = new MessageForm();
+		
+		LOGGER.info("Sub, Pred, Obj sent to API component");
+		
+		MessageForm.sendData(subject, predicate, object);
+		
+		true_false_value = message.getResponse();
+		
+		LOGGER.info("Value " + true_false_value + " returned from microservice");
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
 
-JSONObject jsonObject = new JSONObject();
-jsonObject.put("name", true_false_value);
-System.out.println("hamza here"+jsonObject.toString());
-out.print(jsonObject);
-
-/*response.setContentType("application/json");// set content to json
-PrintWriter out = response.getWriter();
-out.print(true_false_value);
-out.flush();*/
-
-//Prints the response on the fronted. 
-//out.println("Response from the microservice is: " + true_false_value); 		//doGet(request, response);
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("name", true_false_value);
+		out.print(jsonObject);
 	}
-	}
+}
