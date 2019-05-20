@@ -120,13 +120,16 @@ class KnowledgeLinker(object):
 		print("Opened database successfully")
 
 		cursor.execute("select nodeId from nodes where nodeValue = suri;")
-		sid = cursor.fetchone()
+		sidResult = cursor.fetchone()
+		sid = sidResult[0]
 
 		cursor.execute("select relationId from relations where relationValue = puri;")
-		pid = cursor.fetchone()
+		pidResult = cursor.fetchone()
+		pid = pidResult[0]
 
 		cursor.execute("select nodeId from nodes where nodeValue = ouri;")
-		oid = cursor.fetchone()
+		oidResult = cursor.fetchone()
+		oid = oidResult[0]
 
 		return sid, pid, oid
 
