@@ -5,6 +5,7 @@
 build/
 data/
 dist/
+database/
 knowledgestream.egg-info/
 output/
 data.zip

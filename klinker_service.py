@@ -5,6 +5,7 @@ import numpy as np
 import ujson as json
 import logging as log
 import warnings
+import sqlite3
 
 from nameko.rpc import rpc
 from time import time
@@ -113,11 +114,28 @@ class KnowledgeLinker(object):
 		log.info('')
 		return scores, paths, rpaths, times
 
-    	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def stream(self, sid, pid, oid):
+	def uriToId(self, suri, puri, ouri):
+		conn = sqlite3.connect('database/knowledgegraph.db')
+		cursor = conn.cursor()
+		print("Opened database successfully")
 
-		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_klinker
+		cursor.execute("select nodeId from nodes where nodeValue = suri;")
+		sid = cursor.fetchone()
 
+		cursor.execute("select relationId from relations where relationValue = puri;")
+		pid = cursor.fetchone()
+
+		cursor.execute("select nodeId from nodes where nodeValue = ouri;")
+		oid = cursor.fetchone()
+
+		return sid, pid, oid
+
+	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
+	def stream(self, suri, puri, ouri):
+
+		suri, puri, ouri = np.array([suri]), np.array([puri]), np.array([ouri])	# required for passing it to compute_klinker
+
+		sid, pid, oid = self.uriToId(suri, puri, ouri)
 		t1 = time()
 
 		log.info('Computing KL for triple')

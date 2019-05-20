@@ -8,7 +8,7 @@ public class MainClass {
 		
 		try {
 			RPCClient client = new RPCClient();
-			String result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
+			String result = client.call("{\"args\": ['dbr:Al_Attles', 'dbo:team', 'dbr:Golden_State_Warriors'], \"kwargs\": {}}");
 			System.out.println(result);
 			client.close();
 		} catch (IOException e) {
