@@ -116,7 +116,7 @@ class KnowledgeLinker(object):
 	def uriToId(self, suri, puri, ouri):
 		conn = sqlite3.connect('database/knowledgegraph.db')
 		cursor = conn.cursor()
-		print('Opened database successfully!')
+		print('Opened database successfully! \n')
 
 		cursor.execute("select nodeId from nodes where nodeValue = ?;", [suri])
 		sidResult = cursor.fetchone()
@@ -134,12 +134,12 @@ class KnowledgeLinker(object):
 
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, suri, puri, ouri):
-		print('RPC called!')
+		print('RPC called! \n')
 
 		print('SURI, PURI and OURI are:')
-		print(suri[0])
-		print(puri[0])
-		print(ouri[0])
+		print(suri)
+		print(puri)
+		print(ouri)
 		print('\n')
 
 		sid, pid, oid = self.uriToId(suri, puri, ouri)
