@@ -131,7 +131,8 @@ class KnowledgeStream(object):
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, sid, pid, oid):
 
-		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_mincostflow
+		# required for passing it to compute_mincostflow
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
 
 		t1 = time()
 

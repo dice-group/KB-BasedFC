@@ -1,6 +1,5 @@
 import sys
 import os
-import pandas as pd
 import numpy as np
 import ujson as json
 import logging as log
@@ -9,7 +8,7 @@ import sqlite3
 
 from nameko.rpc import rpc
 from time import time
-from os.path import expanduser, abspath, exists, join, basename, splitext
+from os.path import expanduser, abspath, exists, join
 from datetime import date
 from datastructures.rgraph import Graph, weighted_degree
 
@@ -117,17 +116,17 @@ class KnowledgeLinker(object):
 	def uriToId(self, suri, puri, ouri):
 		conn = sqlite3.connect('database/knowledgegraph.db')
 		cursor = conn.cursor()
-		print("Opened database successfully")
+		print('Opened database successfully!')
 
-		cursor.execute("select nodeId from nodes where nodeValue = suri;")
+		cursor.execute("select nodeId from nodes where nodeValue = ?;", [suri])
 		sidResult = cursor.fetchone()
 		sid = sidResult[0]
 
-		cursor.execute("select relationId from relations where relationValue = puri;")
+		cursor.execute("select relationId from relations where relationValue = ?;", [puri])
 		pidResult = cursor.fetchone()
 		pid = pidResult[0]
 
-		cursor.execute("select nodeId from nodes where nodeValue = ouri;")
+		cursor.execute("select nodeId from nodes where nodeValue = ?;", [ouri])
 		oidResult = cursor.fetchone()
 		oid = oidResult[0]
 
@@ -135,11 +134,26 @@ class KnowledgeLinker(object):
 
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, suri, puri, ouri):
+		print('RPC called!')
 
-		suri, puri, ouri = np.array([suri]), np.array([puri]), np.array([ouri])	# required for passing it to compute_klinker
+		print('SURI, PURI and OURI are:')
+		print(suri[0])
+		print(puri[0])
+		print(ouri[0])
+		print('\n')
 
 		sid, pid, oid = self.uriToId(suri, puri, ouri)
+
+		# required for passing it to compute_klinker
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
+
 		t1 = time()
+
+		print('Their corresponding IDs are:')
+		print(sid)
+		print(pid)
+		print(oid)
+		print('\n')
 
 		log.info('Computing KL for triple')
 		with warnings.catch_warnings():
