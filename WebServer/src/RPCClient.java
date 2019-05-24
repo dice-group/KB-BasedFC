@@ -22,11 +22,13 @@ public class RPCClient {
         channel = connection.createChannel();
         channel.exchangeDeclare(EXCHANGE_NAME, "topic", true);
         replyQueueName = channel.queueDeclare().getQueue();
-        channel.queueBind(replyQueueName, EXCHANGE_NAME, replyQueueName);
+
+        channel.queueBind(replyQueueName, EXCHANGE_NAME, replyQueueName);        
+
     }
 
     public String call(String message) throws IOException, TimeoutException, InterruptedException {
-        String corrId = UUID.randomUUID().toString();
+        final String corrId = UUID.randomUUID().toString();
 
         AMQP.BasicProperties props = new AMQP.BasicProperties
                 .Builder()
@@ -36,13 +38,13 @@ public class RPCClient {
                 .replyTo(replyQueueName)
                 .build();
 
-        System.out.println("Triple sent to the queue!");
+        //System.out.println("Triple sent to the queue!");
         channel.basicPublish(EXCHANGE_NAME, routingKey, props, message.getBytes("UTF-8"));
 
 
         final BlockingQueue<String> response = new ArrayBlockingQueue<String>(1);
 
-        System.out.println("Processing...");
+        //System.out.println("Processing...");
         channel.basicConsume(replyQueueName, true, new DefaultConsumer(channel) {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {

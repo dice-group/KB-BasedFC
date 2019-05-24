@@ -1,7 +1,6 @@
 .DS_Store
 *.pyc
 *.so
-*.html
 build/
 data/
 dist/
@@ -12,5 +11,4 @@ data.zip
 *.class
 *.classpath
 *.project
-venv/
-.idea/
+factchecking-demo/node_modules/

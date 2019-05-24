@@ -1,0 +1,16 @@
+.example-container {
+  display: flex;
+  flex-direction: column;
+  margin: 25px 50px;
+}
+
+.example-container > * {
+  width: 60%;
+  
+}
+
+.example-button-row button,
+.example-button-row a {
+  margin: 25px 50px 75px 100px;
+  width: 100px;
+}
