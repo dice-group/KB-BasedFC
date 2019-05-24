@@ -34,8 +34,8 @@ public class MessageForm {
 		try {
 			RPCClient client = new RPCClient();
 			LOGGER.info("Sending " + simplifiedData + " to microservice");
-//			result = client.call(simplifiedData);
-			result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
+			result = client.call(simplifiedData);
+//			result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
 			LOGGER.info("Result " + result + " received from microservice");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
