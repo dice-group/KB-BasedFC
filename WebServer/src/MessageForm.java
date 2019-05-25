@@ -3,61 +3,76 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
 public class MessageForm {
 	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
+	private static AtomicLong idCounter = new AtomicLong();
 
-	public void sendData(Fact fact) {
+	public void sendData(Fact fact) throws IOException, TimeoutException, InterruptedException {
 
 		String result = "";
-		int x =  generateRandomNumber();
-		int num = Math.abs(x);
+
+		if(fact.getAlgorithm().equals("all")) {
+			String[] routingKeys = new String[] {"kstream.stream, relklinker.stream, klinker.stream"};
+			for (String key : routingKeys) {
+
+				RPCClient multiple = new RPCClient();
+				String statement = generateRDFStatement(fact);
+
+				LOGGER.info("Sending " + statement + " to microservice");
+
+				multiple.setRoutingKey(key);
+
+				LOGGER.info("Sending " + statement + " to " + key + " queue.");
+
+				result = multiple.call(statement);
+				fact.setTruthValue(extractTruthValue(result));
+			}
+		}
+		else {
+
+			RPCClient client = new RPCClient();
+			String statement = generateRDFStatement(fact);
+
+			if(fact.getAlgorithm().equals("kstream"))
+				client.setRoutingKey("kstream.stream");
+			else if(fact.getAlgorithm().equals("relklinker"))
+				client.setRoutingKey("relklinker.stream");
+			else if(fact.getAlgorithm().equals("klinker"))
+				client.setRoutingKey("klinker.stream");
+
+			LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
+
+			result = client.call(statement);
+			fact.setTruthValue(extractTruthValue(result));
+		}
+
+		LOGGER.info("Result " + result + " received from microservice");
+	}
+
+	private String generateRDFStatement(Fact fact) {
 		String date = getDate();
-		String simplifiedData = String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#type> <http://www.w3.org/%s-rdf-syntax-ns#Statement> .\n" +
+		long id = idCounter.getAndIncrement();
+		return String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#type> <http://www.w3.org/%s-rdf-syntax-ns#Statement> .\n" +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#subject> <%s> .\n" +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#predicate> <%s> .\n" +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#object> <%s> .\n"
-				, num
+				, id
 				, date
 				, date
-				, num
+				, id
 				, date
 				, fact.getSubject()
-				, num
+				, id
 				, date
 				, fact.getPredicate()
-				, num
+				, id
 				, date
 				, fact.getObject());
-
-		try {
-			RPCClient client = new RPCClient();
-			LOGGER.info("Sending " + simplifiedData + " to microservice");
-//			result = client.call(simplifiedData);
-			result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
-			LOGGER.info("Result " + result + " received from microservice");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//		fact.setTruthValue(extractTruthValue(result));
-		fact.setTruthValue(extractTruthValue(String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://swc2017.aksw.org/hasTruthValue> \"0.0\"^^<http://www.w3.org/2001/XMLSchema#double> .", num)));
-	}
-
-	private int generateRandomNumber()
-	{
-		Random randomno = new Random();
-		int value = randomno.nextInt();
-		return value;
 	}
 
 	private String getDate()
@@ -67,7 +82,7 @@ public class MessageForm {
 		String date = dtf.format(now);
 		return date;
 	}
-	
+
 	private double extractTruthValue(String result) {
 		String[] valuesInQuotes = StringUtils.substringsBetween(result , "\"", "\"");
 		return Double.parseDouble(valuesInQuotes[0]);
