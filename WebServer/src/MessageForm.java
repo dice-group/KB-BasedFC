@@ -5,6 +5,8 @@ import java.util.Random;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class MessageForm {
 	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
 
@@ -47,7 +49,8 @@ public class MessageForm {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		fact.setTruthValue(extractTruthValue(result));
+//		fact.setTruthValue(extractTruthValue(result));
+		fact.setTruthValue(extractTruthValue(String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://swc2017.aksw.org/hasTruthValue> \"0.0\"^^<http://www.w3.org/2001/XMLSchema#double> .", num)));
 	}
 
 	private int generateRandomNumber()
@@ -65,9 +68,9 @@ public class MessageForm {
 		return date;
 	}
 	
-	// This method should implemented to extract FC value from microservice result in ISWC format
 	private double extractTruthValue(String result) {
-		return 0.0;
+		String[] valuesInQuotes = StringUtils.substringsBetween(result , "\"", "\"");
+		return Double.parseDouble(valuesInQuotes[0]);
 	}
 
 }
