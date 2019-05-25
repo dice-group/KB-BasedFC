@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Fact } from './fact';
-
+import { FACTS } from './facts-list';
 
 export interface Algorithm {
   value: string;
@@ -16,13 +16,12 @@ export interface Algorithm {
 export class AppComponent {
   
   title = 'Fact Checking based on Knowledge Graph';
-  apiRoot: String = '';
+  apiRoot: String = 'http://localhost:8080';
   url = `${this.apiRoot}/WebServer/s_p_o`;
   subjectURI = '';
   predicateURI = '';
   objectURI = '';
   algorithm = '';
-  taskId = 1;
   // trueValue: number;
 
   constructor(private http: HttpClient) {
@@ -36,6 +35,10 @@ export class AppComponent {
     {value: 'all', viewValue: 'All of the above'}
   ];
 
+  selectedAlgorithm(value) {
+    this.algorithm = value;
+  }
+
   /**
    * Resets all the variables value to default.
    */
@@ -43,6 +46,7 @@ export class AppComponent {
     this.subjectURI = '';
     this.predicateURI = '';
     this.objectURI = '';
+    this.algorithm = '';
     console.log('All values have been reset!')
   }
 
@@ -51,8 +55,7 @@ export class AppComponent {
    */
   submitData() {
     let obj;
-    this.taskId++;
-    obj = {'taskId': this.taskId, 'subject': this.subjectURI, 'predicate': this.predicateURI, 'object': this.objectURI, 'algorithm': this.algorithm}
+    obj = {'subject': this.subjectURI, 'predicate': this.predicateURI, 'object': this.objectURI, 'algorithm': this.algorithm}
     const myJSON = JSON.stringify(obj);
     this.sendToApi(myJSON);
   }
@@ -74,6 +77,7 @@ export class AppComponent {
               console.log(fact.taskId);
               console.log(fact.subject);
               console.log(fact.truthValue);
+              FACTS.push(fact);
               resolve();
             } catch (e) {
               console.log('Exception: ' + e);
