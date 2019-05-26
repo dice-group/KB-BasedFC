@@ -1,6 +1,5 @@
 import sys
 import os
-import pandas as pd
 import numpy as np
 import ujson as json
 import logging as log
@@ -8,7 +7,7 @@ import warnings
 
 from nameko.rpc import rpc
 from time import time
-from os.path import expanduser, abspath, exists, join, basename, splitext
+from os.path import expanduser, abspath, exists, join
 from datetime import date
 from datastructures.rgraph import Graph, weighted_degree
 
@@ -63,7 +62,7 @@ class KnowledgeLinker(object):
 
 	# ================= RELATIONAL KNOWLEDGE LINKER ALGORITHM ============
 
-	def compute_relklinker(G, relsim, subs, preds, objs):
+	def compute_relklinker(self, G, relsim, sid, pid, oid):
 		"""
 		Parameters:
 		-----------
@@ -97,7 +96,7 @@ class KnowledgeLinker(object):
 		indptr = G.csr.indptr.copy()
 
 		scores, paths, rpaths, times = [], [], [], []
-		for idx, (s, p, o) in enumerate(zip(subs, preds, objs)):
+		for idx, (s, p, o) in enumerate(zip(sid, pid, oid)):
 			print '{}. Working on {}..'.format(idx + 1, (s, p, o)),
 			ts = time()
 			# set relational weight
@@ -122,7 +121,7 @@ class KnowledgeLinker(object):
 		log.info('')
 		return scores, paths, rpaths, times
 
-    @rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
+    	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, sid, pid, oid):
 
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_relklinker

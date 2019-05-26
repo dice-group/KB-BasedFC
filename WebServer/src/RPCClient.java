@@ -11,7 +11,7 @@ public class RPCClient {
 	private Connection connection;
     private Channel channel;
     private static final String EXCHANGE_NAME = "nameko-rpc";
-    private String routingKey = "klinker.stream";
+    private String routingKey = "relklinker.stream";
     private String replyQueueName;
 
     public RPCClient() throws IOException, TimeoutException {
