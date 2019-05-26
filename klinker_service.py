@@ -5,6 +5,7 @@ import ujson as json
 import logging as log
 import warnings
 import sqlite3
+import mapping
 
 from nameko.rpc import rpc
 from time import time
@@ -113,25 +114,6 @@ class KnowledgeLinker(object):
 		log.info('')
 		return scores, paths, rpaths, times
 
-	def uriToId(self, suri, puri, ouri):
-		conn = sqlite3.connect('database/knowledgegraph.db')
-		cursor = conn.cursor()
-		print('Opened database successfully! \n')
-
-		cursor.execute("select nodeId from nodes where nodeValue = ?;", [suri])
-		sidResult = cursor.fetchone()
-		sid = sidResult[0]
-
-		cursor.execute("select relationId from relations where relationValue = ?;", [puri])
-		pidResult = cursor.fetchone()
-		pid = pidResult[0]
-
-		cursor.execute("select nodeId from nodes where nodeValue = ?;", [ouri])
-		oidResult = cursor.fetchone()
-		oid = oidResult[0]
-
-		return sid, pid, oid
-
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, suri, puri, ouri):
 		print('RPC called! \n')
@@ -142,7 +124,8 @@ class KnowledgeLinker(object):
 		print(ouri)
 		print('\n')
 
-		sid, pid, oid = self.uriToId(suri, puri, ouri)
+		# sid, pid, oid = self.uriToId(suri, puri, ouri)
+		sid, pid, oid = mapping.convert(suri, puri, ouri)
 
 		# required for passing it to compute_klinker
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
