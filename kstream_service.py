@@ -1,6 +1,5 @@
 import sys
 import os
-import pandas as pd
 import numpy as np
 import ujson as json
 import logging as log
@@ -8,7 +7,7 @@ import warnings
 
 from nameko.rpc import rpc
 from time import time
-from os.path import expanduser, abspath, exists, join, basename, splitext
+from os.path import expanduser, abspath, exists, join
 from datetime import date
 from datastructures.rgraph import Graph, weighted_degree
 

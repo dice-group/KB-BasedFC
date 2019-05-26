@@ -13,11 +13,11 @@ from datastructures.rgraph import Graph, weighted_degree
 
 
 # OUR METHODS
-from algorithms.klinker.closure import closure
+from algorithms.relklinker.rel_closure import relational_closure as relclosure
 
 class KnowledgeLinker(object):
 
-	name = 'klinker'
+	name = 'relklinker'
 
 	HOME = abspath(expanduser('./data/'))
 
@@ -60,15 +60,16 @@ class KnowledgeLinker(object):
 	# relational similarity
 	relsim = np.load(RELSIMPATH)
 
+	# ================= RELATIONAL KNOWLEDGE LINKER ALGORITHM ============
 
-	# ================= KNOWLEDGE LINKER ALGORITHM ============
-
-	def compute_klinker(self, G, sid, pid, oid):
+	def compute_relklinker(self, G, relsim, sid, pid, oid):
 		"""
 		Parameters:
 		-----------
 		G: rgraph
 			See `datastructures`.
+		relsim: ndarray
+			A square matrix containing relational similarity scores.
 		subs, preds, objs: sequence
 			Sequences representing the subject, predicate and object of
 			input triples.
@@ -86,17 +87,25 @@ class KnowledgeLinker(object):
 		specificity_wt = indegsim[targets]  # specificity
 		G.csr.data = specificity_wt.copy()
 
+		# relation vector
+		relations = (G.csr.indices - targets) / G.N
+
 		# back up
 		data = G.csr.data.copy()
 		indices = G.csr.indices.copy()
 		indptr = G.csr.indptr.copy()
 
-		# compute closure
 		scores, paths, rpaths, times = [], [], [], []
 		for idx, (s, p, o) in enumerate(zip(sid, pid, oid)):
 			print '{}. Working on {}..'.format(idx + 1, (s, p, o)),
 			ts = time()
-			rp = closure(G, s, p, o, kind='metric', linkpred=True)
+			# set relational weight
+			G.csr.data[targets == o] = 1  # no cost for target t => max. specificity.
+			relsimvec = relsim[p, :]  # specific to predicate p
+			relsim_wt = relsimvec[relations]  # graph weight
+			G.csr.data = np.multiply(relsim_wt, G.csr.data)
+
+			rp = relclosure(G, s, p, o, kind='metric', linkpred=True)
 			tend = time()
 			print 'time: {:.2f}s'.format(tend - ts)
 			times.append(tend - ts)
@@ -115,16 +124,16 @@ class KnowledgeLinker(object):
     	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, sid, pid, oid):
 
-		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_klinker
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_relklinker
 
 		t1 = time()
 
-		log.info('Computing KL for triple')
+		log.info('Computing REL-KL for triple')
 		with warnings.catch_warnings():
 			warnings.simplefilter("ignore")
 
-			# compute klinker
-			scores, paths, rpaths, times = self.compute_klinker(self.G, sid, pid, oid)
+			# compute relklinker
+			scores, paths, rpaths, times = self.compute_relklinker(self.G, self.relsim, sid, pid, oid)
 
-			log.info('KLinker computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
+			log.info('Rel-KLinker computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 		return json.dumps({'FC value': scores})
