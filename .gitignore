@@ -4,11 +4,12 @@
 build/
 data/
 dist/
+database/
 knowledgestream.egg-info/
 output/
+.idea/
 data.zip
 *.class
 *.classpath
 *.project
 factchecking-demo/node_modules/
-.idea/

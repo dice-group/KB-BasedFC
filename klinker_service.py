@@ -1,14 +1,14 @@
 import sys
 import os
-import pandas as pd
 import numpy as np
 import ujson as json
 import logging as log
 import warnings
+import mapping
 
 from nameko.rpc import rpc
 from time import time
-from os.path import expanduser, abspath, exists, join, basename, splitext
+from os.path import expanduser, abspath, exists, join
 from datetime import date
 from datastructures.rgraph import Graph, weighted_degree
 
@@ -113,12 +113,29 @@ class KnowledgeLinker(object):
 		log.info('')
 		return scores, paths, rpaths, times
 
-    	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def stream(self, sid, pid, oid):
+	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
+	def stream(self, suri, puri, ouri):
+		print('RPC called! \n')
 
-		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_klinker
+		print('SURI, PURI and OURI are:')
+		print(suri)
+		print(puri)
+		print(ouri)
+		print('\n')
+
+		# sid, pid, oid = self.uriToId(suri, puri, ouri)
+		sid, pid, oid = mapping.convert(suri, puri, ouri)
+
+		# required for passing it to compute_klinker
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
 
 		t1 = time()
+
+		print('Their corresponding IDs are:')
+		print(sid)
+		print(pid)
+		print(oid)
+		print('\n')
 
 		log.info('Computing KL for triple')
 		with warnings.catch_warnings():
