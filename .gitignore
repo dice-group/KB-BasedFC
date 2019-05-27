@@ -7,6 +7,7 @@ data/
 dist/
 knowledgestream.egg-info/
 output/
+database/
 data.zip
 *.class
 *.classpath
