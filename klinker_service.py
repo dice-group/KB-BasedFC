@@ -4,7 +4,6 @@ import numpy as np
 import ujson as json
 import logging as log
 import warnings
-import sqlite3
 import mapping
 
 from nameko.rpc import rpc
