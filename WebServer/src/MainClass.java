@@ -6,12 +6,12 @@ public class MainClass {
 	public static void main(String[] args){
 		// TODO Auto-generated method stub
 		
-		String simplifiedData = String.format(
-				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .\n" +
-				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <dbr:Al_Attles> .\n" +
-				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <dbo:team> .\n" +
-				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <dbr:Golden_State_Warriors> .\n"
-				);
+//		String simplifiedData = String.format(
+//				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> .\n" +
+//				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <dbr:Al_Attles> .\n" +
+//				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <dbo:team> .\n" +
+//				"<http://swc2017.aksw.org/task2/dataset/s-789147186> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <dbr:Golden_State_Warriors> .\n"
+//				);
 		
 		try {
 			RPCClient client = new RPCClient();
