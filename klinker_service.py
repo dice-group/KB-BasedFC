@@ -5,6 +5,7 @@ import ujson as json
 import logging as log
 import warnings
 import mapping
+import extract
 
 from nameko.rpc import rpc
 from time import time
@@ -114,8 +115,11 @@ class KnowledgeLinker(object):
 		return scores, paths, rpaths, times
 
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def stream(self, suri, puri, ouri):
+	def stream(self, data):
+
 		print('RPC called! \n')
+
+		identification, theDate, suri, puri, ouri = extract.getValues(data)
 
 		print('SURI, PURI and OURI are:')
 		print(suri)
@@ -145,4 +149,6 @@ class KnowledgeLinker(object):
 			scores, paths, rpaths, times = self.compute_klinker(self.G, sid, pid, oid)
 
 			log.info('KLinker computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
-		return json.dumps({'FC value': scores})
+			result = '<http://swc2017.aksw.org/task2/dataset/s-'+str(identification)+'> <http://swc2017.aksw.org/hasTruthValue>\"'+str(scores[0])+'\"<http://www.w3.org/2001/XMLSchema#double> .'
+			print(result)
+		return result
