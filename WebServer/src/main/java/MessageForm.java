@@ -28,7 +28,10 @@ public class MessageForm {
 
 				LOGGER.info("Sending " + statement + " to " + key + " queue.");
 
-				result = multiple.call(statement);
+				result = multiple.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
+				
+				LOGGER.info("Result " + result + " received from microservice");
+				
 				fact.setTruthValue(extractTruthValue(result));
 			}
 		}
@@ -46,11 +49,12 @@ public class MessageForm {
 
 			LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
-			result = client.call(statement);
+			result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
+			
+			LOGGER.info("Result " + result + " received from microservice");
+			
 			fact.setTruthValue(extractTruthValue(result));
 		}
-
-		LOGGER.info("Result " + result + " received from microservice");
 	}
 
 	public String generateRDFStatement(Fact fact) {
