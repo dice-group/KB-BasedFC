@@ -8,6 +8,7 @@ database/
 knowledgestream.egg-info/
 output/
 .idea/
+.metadata/
 data.zip
 *.class
 *.classpath
