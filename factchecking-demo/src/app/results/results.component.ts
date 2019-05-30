@@ -1,6 +1,6 @@
 import { OnInit, Component } from '@angular/core';
 import { Fact } from '../fact';
-import { FACTS } from '../mock-facts';
+import { FACTS } from '../facts-list';
 
 @Component({
     selector: 'app-results',

@@ -5,7 +5,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class Fact implements Serializable {
 
 	@JsonProperty("taskId")
-	private int taskId;
+	private long taskId;
 	
 	@JsonProperty("subject")
 	private String subject;
@@ -22,11 +22,11 @@ public class Fact implements Serializable {
 	@JsonProperty("truthValue")
 	private double truthValue;
 	
-	public int getTaskId() {
+	public long getTaskId() {
 		return taskId;
 	}
-	public void setTaskId(int taskId) {
-		this.taskId = taskId;
+	public void setTaskId(long id) {
+		this.taskId = id;
 	}
 	public String getSubject() {
 		return subject;
