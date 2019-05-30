@@ -4,8 +4,11 @@
 build/
 data/
 dist/
+database/
 knowledgestream.egg-info/
 output/
+database/
+.idea/
 data.zip
 *.class
 *.classpath

@@ -1,6 +1,5 @@
 import sys
 import os
-import pandas as pd
 import numpy as np
 import ujson as json
 import logging as log
@@ -8,7 +7,7 @@ import warnings
 
 from nameko.rpc import rpc
 from time import time
-from os.path import expanduser, abspath, exists, join, basename, splitext
+from os.path import expanduser, abspath, exists, join
 from datetime import date
 from datastructures.rgraph import Graph, weighted_degree
 
@@ -131,7 +130,8 @@ class KnowledgeStream(object):
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, sid, pid, oid):
 
-		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])	# required for passing it to compute_mincostflow
+		# required for passing it to compute_mincostflow
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
 
 		t1 = time()
 
