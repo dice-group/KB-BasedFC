@@ -11,6 +11,8 @@ Run the following command in order to setup the environment:<br>
 # Data
 Download data from the following URL http://carl.cs.indiana.edu/data/fact-checking/data.zip and decompress it inside `KB-BasedFC` directory.
 
+Download database used by the microservices from the following URL https://mega.nz/#!GAFjXIob!OsB-VtK0wtsEBHVwbghJhslgllQUp1sYLsp34bVmKu4 and decompress it inside `KB-BasedFC` directory
+
 # System requirements
 
 * **OS:** Linux Ubuntu / Mac OSX 10.12 (Sierra)
