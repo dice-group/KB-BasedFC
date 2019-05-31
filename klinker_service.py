@@ -1,7 +1,6 @@
 import sys
 import os
 import numpy as np
-import ujson as json
 import logging as log
 import warnings
 import mapping
