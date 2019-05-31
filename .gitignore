@@ -8,6 +8,8 @@ dist/
 knowledgestream.egg-info/
 output/
 .idea/
+.metadata/
+database/
 data.zip
 *.class
 *.classpath
