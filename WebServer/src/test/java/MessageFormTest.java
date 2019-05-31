@@ -13,13 +13,12 @@ public class MessageFormTest {
 	
 	@Before
 	public void init() {
-		fact.setAlgorithm("klinker");
+		fact.setAlgorithm("kstream");
 		fact.setSubject("http://dbpedia.org/resource/Kobe_Bryant");
 		fact.setPredicate("http://dbpedia.org/ontology/team");
 		fact.setObject("http://dbpedia.org/resource/Los_Angeles_Lakers");
 	}
 	
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testSingle() {
 		try {
@@ -34,6 +33,6 @@ public class MessageFormTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		assertEquals(0.08863, fact.getTruthValue());
+		assertEquals((double)0.08862923190529146, fact.getTruthValue(), 0.00001);
 	}
 }

@@ -4,6 +4,8 @@ import numpy as np
 import ujson as json
 import logging as log
 import warnings
+import mapping
+import extract
 
 from nameko.rpc import rpc
 from time import time
@@ -128,12 +130,31 @@ class KnowledgeStream(object):
 		return mincostflow, times
 
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def stream(self, sid, pid, oid):
+	def stream(self, data):
+
+		print('RPC called! \n')
+
+		identification, theDate, suri, puri, ouri = extract.getValues(data)
+
+		print('SURI, PURI and OURI are:')
+		print(suri)
+		print(puri)
+		print(ouri)
+		print('\n')
+
+		# sid, pid, oid = self.uriToId(suri, puri, ouri)
+		sid, pid, oid = mapping.convert(suri, puri, ouri)
 
 		# required for passing it to compute_mincostflow
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
 
 		t1 = time()
+
+		print('Their corresponding IDs are:')
+		print(sid)
+		print(pid)
+		print(oid)
+		print('\n')
 
 		log.info('Computing KS for triple')
 		with warnings.catch_warnings():
@@ -143,4 +164,6 @@ class KnowledgeStream(object):
 			# spo_df = self.normalize(spo_df)
 
 			log.info('Mincostflow computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
-		return json.dumps({'FC value': mincostflows})
+			result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(mincostflows) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
+			print(result)
+		return result

@@ -87,7 +87,7 @@ public class MessageForm {
 	}
 
 	private double extractTruthValue(String result) {
-		String[] valuesInQuotes = StringUtils.substringsBetween(result , "\"", "\"");
+		String[] valuesInQuotes = StringUtils.substringsBetween(result , "\\\"", "\\\"");
 		return Double.parseDouble(valuesInQuotes[0]);
 	}
 
