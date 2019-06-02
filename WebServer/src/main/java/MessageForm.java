@@ -14,52 +14,29 @@ public class MessageForm {
 	public void sendData(Fact fact) throws IOException, TimeoutException, InterruptedException {
 
 		String result = "";
+		RPCClient client = new RPCClient();
+		String statement = generateRDFStatement(fact);
 
-		if(fact.getAlgorithm().equals("all")) {
-			String[] routingKeys = new String[] {"kstream.stream, relklinker.stream, klinker.stream"};
-			for (String key : routingKeys) {
+		if(fact.getAlgorithm().equals("kstream"))
+			client.setRoutingKey("kstream.stream");
+		else if(fact.getAlgorithm().equals("relklinker"))
+			client.setRoutingKey("relklinker.stream");
+		else if(fact.getAlgorithm().equals("klinker"))
+			client.setRoutingKey("klinker.stream");
 
-				RPCClient multiple = new RPCClient();
-				String statement = generateRDFStatement(fact);
+		LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
-				LOGGER.info("Sending " + statement + " to microservice");
+		result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
 
-				multiple.setRoutingKey(key);
+		LOGGER.info("Result " + result + " received from microservice");
 
-				LOGGER.info("Sending " + statement + " to " + key + " queue.");
-
-				result = multiple.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
-				
-				LOGGER.info("Result " + result + " received from microservice");
-				
-				fact.setTruthValue(extractTruthValue(result));
-			}
-		}
-		else {
-
-			RPCClient client = new RPCClient();
-			String statement = generateRDFStatement(fact);
-
-			if(fact.getAlgorithm().equals("kstream"))
-				client.setRoutingKey("kstream.stream");
-			else if(fact.getAlgorithm().equals("relklinker"))
-				client.setRoutingKey("relklinker.stream");
-			else if(fact.getAlgorithm().equals("klinker"))
-				client.setRoutingKey("klinker.stream");
-
-			LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
-
-			result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
-			
-			LOGGER.info("Result " + result + " received from microservice");
-			
-			fact.setTruthValue(extractTruthValue(result));
-		}
+		fact.setTruthValue(extractTruthValue(result));
 	}
 
 	public String generateRDFStatement(Fact fact) {
 		String date = getDate();
 		long id = idCounter.getAndIncrement();
+		fact.setTaskId(id);
 		return String.format("<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#type> <http://www.w3.org/%s-rdf-syntax-ns#Statement> ." +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#subject> <%s> ." +
 				"<http://swc2017.aksw.org/task2/dataset/s-%s> <http://www.w3.org/%s-rdf-syntax-ns#predicate> <%s> ." +
