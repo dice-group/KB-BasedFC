@@ -3,7 +3,7 @@
   <li *ngFor="let fact of facts"
     [class.selected]="fact === selectedFact"
     (click)="onSelect(fact)">
-    <span class="badge">{{fact.id}}</span>
+    <span class="badge">{{fact.taskId}}</span>
   </li>
 </ul>
 
