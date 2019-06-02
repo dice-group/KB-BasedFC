@@ -16,7 +16,7 @@ public class MessageForm {
 		String result = "";
 
 		if(fact.getAlgorithm().equals("all")) {
-			String[] routingKeys = new String[] {"kstream.stream, relklinker.stream, klinker.stream"};
+			String[] routingKeys = new String[] {"kstream.stream", "relklinker.stream", "klinker.stream"};
 			for (String key : routingKeys) {
 
 				RPCClient multiple = new RPCClient();

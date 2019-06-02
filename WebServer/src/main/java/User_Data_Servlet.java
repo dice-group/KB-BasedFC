@@ -80,6 +80,7 @@ public class User_Data_Servlet extends HttpServlet {
 		LOGGER.info("Extracted truth score " + fact.getTruthValue() + " from the result");
 
 		response.setContentType("application/json");
+		response.setHeader("Access-Control-Allow-Origin", "*");
 		out.print(mapper.writeValueAsString(fact));
 		out.close();
 	}

@@ -3,20 +3,20 @@
   <li *ngFor="let fact of facts"
     [class.selected]="fact === selectedFact"
     (click)="onSelect(fact)">
-    <span class="badge">{{fact.id}}</span> {{fact.subject}}
+    <span class="badge">{{fact.id}}</span>
   </li>
 </ul>
 
 <div *ngIf="selectedFact">
   <div>
     <mat-card>
-        <mat-card-title>{{selectedFact.subject | uppercase}} Details</mat-card-title>
-        <mat-card-content>id : {{selectedFact.id}}</mat-card-content>
+        <mat-card-title>{{selectedFact.subject}} Details</mat-card-title>
+        <mat-card-content>id : {{selectedFact.taskId}}</mat-card-content>
         <mat-card-content>subject : {{selectedFact.subject}}</mat-card-content>
         <mat-card-content>predicate : {{selectedFact.predicate}}</mat-card-content>
         <mat-card-content>object : {{selectedFact.object}}</mat-card-content>
         <mat-card-content>algorithm : {{selectedFact.algorithm}}</mat-card-content>
-        <mat-card-content>truth score : {{selectedFact.truthScore}}</mat-card-content>
+        <mat-card-content>truth score : {{selectedFact.truthValue}}</mat-card-content>
     </mat-card>
   </div>
 

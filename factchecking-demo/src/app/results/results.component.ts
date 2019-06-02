@@ -1,6 +1,6 @@
 import { OnInit, Component } from '@angular/core';
 import { Fact } from '../fact';
-import { FACTS } from '../facts-list';
+import { AppComponent } from '../app.component';
 
 @Component({
     selector: 'app-results',
@@ -10,7 +10,7 @@ import { FACTS } from '../facts-list';
 
 export class ResultsComponent implements OnInit {
  
-    facts = FACTS;
+    facts = AppComponent.FACTS;
     selectedFact: Fact;
 
     ngOnInit() {
