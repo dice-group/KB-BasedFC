@@ -91,4 +91,5 @@ class Predpath(object):
 		# save model
 		predictor = { 'dictvectorizer': vec, 'model': model }
 		print("<<<<<<<<<got the results")
+
 		return json.dumps({'FC value': vec})

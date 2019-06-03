@@ -51,7 +51,6 @@ public class User_Data_Servlet extends HttpServlet {
 
 		BufferedReader reader = request.getReader();
 		ObjectMapper mapper = new ObjectMapper();
-		PrintWriter out = response.getWriter();
 
 		JSONObject jObject = new JSONObject(reader.readLine());
 
@@ -59,29 +58,53 @@ public class User_Data_Servlet extends HttpServlet {
 
 		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
 
-		Fact fact = mapper.readValue(jObject.toString(), Fact.class);
+		Fact mainFact = mapper.readValue(jObject.toString(), Fact.class);
 
-		LOGGER.info("Extracted values " + fact.getTaskId() + "," + fact.getSubject() + "," + fact.getPredicate() + "," + fact.getObject() + "," + fact.getAlgorithm());
+		LOGGER.info("Extracted values " + mainFact.getTaskId() + "," + mainFact.getSubject() + "," + mainFact.getPredicate() + "," + mainFact.getObject() + "," + mainFact.getAlgorithm());
 
 		MessageForm message = new MessageForm();
-
-		LOGGER.info("Sub, Pred, Obj sent to API component");
-
-		try {
-			message.sendData(fact);
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		LOGGER.info("Extracted truth score " + fact.getTruthValue() + " from the result");
-
+		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setHeader("Access-Control-Allow-Origin", "*");
-		out.print(mapper.writeValueAsString(fact));
+
+		if(mainFact.getAlgorithm().equals("all")) {
+			String[] algorithms = new String[] {"kstream", "relklinker", "klinker"};
+			for (String algorithm : algorithms) {
+				Fact subFact = new Fact();
+				subFact.setAlgorithm(algorithm);
+				subFact.setSubject(mainFact.getSubject());
+				subFact.setPredicate(mainFact.getPredicate());
+				subFact.setObject(mainFact.getObject());
+				try {
+					message.sendData(subFact);
+				} catch (TimeoutException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				LOGGER.info("Extracted truth score " + subFact.getTruthValue() + " from the result");
+
+				out.print(mapper.writeValueAsString(subFact));
+			}
+		}
+		else {
+			try {
+				message.sendData(mainFact);
+			} catch (TimeoutException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			LOGGER.info("Extracted truth score " + mainFact.getTruthValue() + " from the result");
+
+			out.print(mapper.writeValueAsString(mainFact));
+		}
 		out.close();
 	}
 }
