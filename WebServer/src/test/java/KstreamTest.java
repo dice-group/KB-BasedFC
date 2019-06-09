@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MessageFormTest {
+public class KstreamTest {
 
 	private Fact fact = new Fact();
 	private MessageForm form = new MessageForm();
