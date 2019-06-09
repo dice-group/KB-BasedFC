@@ -1,7 +1,6 @@
 import sys
 import os
 import numpy as np
-import ujson as json
 import logging as log
 import warnings
 import mapping
@@ -132,11 +131,12 @@ class KnowledgeStream(object):
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
 	def stream(self, data):
 
-		print('RPC called! \n')
+		print('\nThe following request in RDF format was passed:')
+		print(data)
 
 		identification, theDate, suri, puri, ouri = extract.getValues(data)
 
-		print('SURI, PURI and OURI are:')
+		print('\nSURI, PURI and OURI are:')
 		print(suri)
 		print(puri)
 		print(ouri)
@@ -150,7 +150,7 @@ class KnowledgeStream(object):
 
 		t1 = time()
 
-		print('Their corresponding IDs are:')
+		print('\nTheir corresponding IDs are:')
 		print(sid)
 		print(pid)
 		print(oid)
@@ -165,5 +165,6 @@ class KnowledgeStream(object):
 
 			log.info('Mincostflow computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 			result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(mincostflows) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
+			print('The result in RDF format is:')
 			print(result)
 		return result
