@@ -1,17 +1,10 @@
 # KB-BasedFC
 *Wrapper for knowledge base-based fact checking systems*<br>
 
-# Fetch
-Run the following command in order to clone it:<br>
-```git clone --recursive https://github.com/dice-group/KB-BasedFC.git```
-
-Run the following command in order to setup the environment:<br>
-```pip install -r requirements.txt```
-
 # Data
-Download data from the following URL http://carl.cs.indiana.edu/data/fact-checking/data.zip and decompress it inside `KB-BasedFC` directory.
+Download data from the following URL http://carl.cs.indiana.edu/data/fact-checking/data.zip and decompress it inside each listed folder in the `services` subdirectory.
 
-Download database used by the microservices from the following URL https://mega.nz/#!GAFjXIob!OsB-VtK0wtsEBHVwbghJhslgllQUp1sYLsp34bVmKu4 and decompress it inside `KB-BasedFC` directory
+Download database used by the microservices from the following URL https://mega.nz/#!GAFjXIob!OsB-VtK0wtsEBHVwbghJhslgllQUp1sYLsp34bVmKu4 and decompress it inside each listed folder in the `services` subdirectory.
 
 # System requirements
 
@@ -19,10 +12,12 @@ Download database used by the microservices from the following URL https://mega.
 * **Python:** Python 2.7 (we developed and tested using the Anaconda distribution)
 * **Memory requirements:** >4 GB
 
-# Install
+# Runing the services
 
-```python setup.py build_ext -if```
+In the `services` subdirectory, go to each of the services listed there and run the commands:
 
-```python setup.py install```
+* For creating the Docker image of the service from the Dockerfile <br>
+```docker build -t [NAME_OF_IMAGE] .```
 
-Note: for the second command, please do sudo in case you need installation rights on the machine.
+* For creating and running the Docker container from the created service image <br>
+```docker container run -it --network="host" --name [<NAME_OF_CONTAINER] [NAME_OF_IMAGE]```
