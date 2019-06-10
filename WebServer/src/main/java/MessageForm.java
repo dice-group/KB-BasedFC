@@ -16,7 +16,7 @@ public class MessageForm {
 		String result = "";
 
 		if(fact.getAlgorithm().equals("all")) {
-			String[] routingKeys = new String[] {"kstream.stream, relklinker.stream, klinker.stream"};
+			String[] routingKeys = new String[] {"predpath.stream"};
 			for (String key : routingKeys) {
 
 				RPCClient multiple = new RPCClient();
@@ -46,10 +46,12 @@ public class MessageForm {
 				client.setRoutingKey("relklinker.stream");
 			else if(fact.getAlgorithm().equals("klinker"))
 				client.setRoutingKey("klinker.stream");
+			else if(fact.getAlgorithm().equals("predpath"))
+				client.setRoutingKey("predpath.stream");
 
 			LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
-			result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
+			result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
 			
 			LOGGER.info("Result " + result + " received from microservice");
 			

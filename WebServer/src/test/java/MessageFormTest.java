@@ -13,7 +13,7 @@ public class MessageFormTest {
 	
 	@Before
 	public void init() {
-		fact.setAlgorithm("kstream");
+		fact.setAlgorithm("predpath");
 		fact.setSubject("http://dbpedia.org/resource/Kobe_Bryant");
 		fact.setPredicate("http://dbpedia.org/ontology/team");
 		fact.setObject("http://dbpedia.org/resource/Los_Angeles_Lakers");

@@ -32,7 +32,8 @@ export class AppComponent {
     {value: 'kstream', viewValue: 'Knowledge Stream'},
     {value: 'relklinker', viewValue: 'Relational Knowledge Linker'},
     {value: 'klinker', viewValue: 'Knowledge Linker'},
-    {value: 'all', viewValue: 'All of the above'}
+    {value: 'predpath', viewValue: 'Predpath'},
+    {value: 'all', viewValue: 'All of the abve'}
   ];
 
   selectedAlgorithm(value) {

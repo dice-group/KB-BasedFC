@@ -71,10 +71,26 @@ class Predpath(object):
 		int_pid = int(pid)
 		int_oid = int(oid)
 
+		print(int_sid)
+		print(int_pid)
+		print(int_oid)
+
 		data = {'sid': [int_sid], 
 			'pid': [int_pid], 
 			'oid': [int_oid],
-			'class': [0,1]}
+			'class': [1]}
+
+#data = {'triple': [[int_sid,int_pid,int_oid], 
+					#[int_sid,int_pid,int_oid], 
+					#[int_sid,int_pid,int_oid],
+					#[int_sid,int_pid,int_oid],
+					#[int_sid,int_pid,int_oid],
+					#[int_sid,int_pid,int_oid],
+					#[int_sid,int_pid,int_oid],
+					#[int_sid,int_pid,int_oid],
+					#[int_sid,int_pid,int_oid],
+					#[int_sid,int_pid,int_oid]],
+					#'class': [1,1,1,1,1,0,0,0,0,0]}
 		dfObj = pd.DataFrame(data)
 		#lst = [[int_sid,1], [int_pid,1], [int_oid,1]] # required for passing it to predpath_train_model
 		#dfObj = pd.DataFrame(lst, columns = ['ids','class']) 
