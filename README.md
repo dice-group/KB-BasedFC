@@ -24,4 +24,4 @@ To run a specific service, go to the `services` subdirectory and inside one of t
 
 To build the Docker images and run the Docker containers altogether:<br>
 * Go to the `services` subdirectory and run the following command <br>
-```docker-compose.yml```
+```docker-compose up```
