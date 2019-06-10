@@ -14,10 +14,14 @@ Download database used by the microservices from the following URL https://mega.
 
 # Runing the services
 
-In the `services` subdirectory, go to each of the services listed there and run the commands:
+To run a specific service, go to the `services` subdirectory and inside one of the services listes in there:
 
 * For creating the Docker image of the service from the Dockerfile <br>
 ```docker build -t [NAME_OF_IMAGE] .```
 
 * For creating and running the Docker container from the created service image <br>
 ```docker container run -it --network="host" --name [<NAME_OF_CONTAINER] [NAME_OF_IMAGE]```
+
+To build the Docker images and run the Docker containers altogether:<br>
+* Go to the `services` subdirectory and run the following command <br>
+```docker-compose.yml```
