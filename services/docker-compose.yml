@@ -1,0 +1,14 @@
+version: '3.4'
+services:
+         kstream:
+                build: ./Kstream
+                container_name: kstream
+                network_mode: "host"
+         klinker:
+                build: ./Klinker
+                container_name: klinker
+                network_mode: "host"    
+         relklinker:
+                build: ./Relklinker
+                container_name: relklinker
+                network_mode: "host"        
