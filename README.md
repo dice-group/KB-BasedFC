@@ -1,5 +1,5 @@
 # KB-BasedFC
-*Wrapper for knowledge base-based fact checking systems*<br>
+*Wrapper for KB-based Fact Checking systems*<br>
 
 # Data
 Download data from the following URL http://carl.cs.indiana.edu/data/fact-checking/data.zip and decompress it inside each listed folder in the `services` subdirectory.
