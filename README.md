@@ -2,7 +2,7 @@
 *Wrapper for KB-based Fact Checking systems*<br>
 
 # Data
-Download data from the following URL http://carl.cs.indiana.edu/data/fact-checking/data.zip and decompress it inside each listed folder in the `services` subdirectory.
+Download data from the following URL https://mega.nz/#!qJU12aZa!RdUs7Uhnd5g4B4ugMgT8m_I_p_OrxDn6QnsBWGylSfk and decompress it inside each listed folder in the `services` subdirectory.
 
 Download database used by the microservices from the following URL https://mega.nz/#!GAFjXIob!OsB-VtK0wtsEBHVwbghJhslgllQUp1sYLsp34bVmKu4 and decompress it inside each listed folder in the `services` subdirectory.
 
