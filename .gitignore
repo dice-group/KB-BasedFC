@@ -8,11 +8,11 @@ database/
 knowledgestream.egg-info/
 output/
 .metadata/
-database/
 .idea/
-.metadata/
 data.zip
 *.class
 *.classpath
 *.project
 factchecking-demo/node_modules/
+algorithms/
+Webserver/bin/
