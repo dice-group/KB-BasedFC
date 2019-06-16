@@ -1,4 +1,0 @@
-[submodule "algorithms"]
-	path = algorithms
-	url = https://github.com/enriozuni/algorithms
-	ignore = dirty
