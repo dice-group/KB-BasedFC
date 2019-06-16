@@ -76,7 +76,7 @@ export class AppComponent {
               let fact: Fact = JSON.parse(JSON.stringify(res));
               console.log(fact.taskId);
               console.log(fact.subject);
-              console.log(fact.truthValue);
+              console.log(fact.results);
               AppComponent.FACTS.push(fact);
               resolve();
             } catch (e) {

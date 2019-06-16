@@ -4,5 +4,6 @@ export class Fact {
     predicate: string;
     object: string;
     algorithm: string;
-    truthValue: number
+    averageTruthValue: number;
+    results: Map<string, number>;
 }
