@@ -74,7 +74,7 @@ class Predpath(object):
 		data = {'sid': [int_sid], 
 			'pid': [int_pid], 
 			'oid': [int_oid],
-			'class': [1]}
+			'class': [0,1]}
 		dfObj = pd.DataFrame(data)
 		#lst = [[int_sid,1], [int_pid,1], [int_oid,1]] # required for passing it to predpath_train_model
 		#dfObj = pd.DataFrame(lst, columns = ['ids','class']) 
