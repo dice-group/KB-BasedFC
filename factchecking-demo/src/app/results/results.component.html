@@ -11,12 +11,16 @@
   <div>
     <mat-card>
         <mat-card-title>{{selectedFact.subject}} Details</mat-card-title>
-        <mat-card-content>id : {{selectedFact.taskId}}</mat-card-content>
+        <mat-card-content>task id : {{selectedFact.taskId}}</mat-card-content>
         <mat-card-content>subject : {{selectedFact.subject}}</mat-card-content>
         <mat-card-content>predicate : {{selectedFact.predicate}}</mat-card-content>
         <mat-card-content>object : {{selectedFact.object}}</mat-card-content>
         <mat-card-content>algorithm : {{selectedFact.algorithm}}</mat-card-content>
-        <mat-card-content>truth score : {{selectedFact.truthValue}}</mat-card-content>
+        <mat-card-subtitle>truth scores :</mat-card-subtitle>
+        <mat-card-content *ngFor="let recipient of selectedFact.results | keyvalue">
+            {{recipient.key}} --> {{recipient.value}}
+        </mat-card-content>
+        <mat-card-content *ngIf="selectedFact.algorithm == 'all'">AVERAGE --> {{selectedFact.averageTruthValue}}</mat-card-content>
     </mat-card>
   </div>
 

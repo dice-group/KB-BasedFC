@@ -70,13 +70,10 @@ public class User_Data_Servlet extends HttpServlet {
 		if(mainFact.getAlgorithm().equals("all")) {
 			String[] algorithms = new String[] {"kstream", "relklinker", "klinker"};
 			for (String algorithm : algorithms) {
-				Fact subFact = new Fact();
-				subFact.setAlgorithm(algorithm);
-				subFact.setSubject(mainFact.getSubject());
-				subFact.setPredicate(mainFact.getPredicate());
-				subFact.setObject(mainFact.getObject());
+				Fact subFact1 = new Fact(mainFact);
+				subFact1.setAlgorithm(algorithm);
 				try {
-					message.sendData(subFact);
+					message.sendData(subFact1);
 				} catch (TimeoutException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -84,15 +81,21 @@ public class User_Data_Servlet extends HttpServlet {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
+				Double truthScore = Double.valueOf(subFact1.getTruthValue());
 
-				LOGGER.info("Extracted truth score " + subFact.getTruthValue() + " from the result");
+				LOGGER.info("Extracted truth score " + truthScore + " from the result");
 
-				out.print(mapper.writeValueAsString(subFact));
+				mainFact.addResults(algorithm, truthScore);
 			}
 		}
 		else {
+			String algorithm = mainFact.getAlgorithm();
+			Fact subFact2 = new Fact(mainFact);
+			subFact2.setAlgorithm(algorithm);
+			
 			try {
-				message.sendData(mainFact);
+				message.sendData(subFact2);
 			} catch (TimeoutException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -100,11 +103,14 @@ public class User_Data_Servlet extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			Double truthScore = Double.valueOf(subFact2.getTruthValue());
 
-			LOGGER.info("Extracted truth score " + mainFact.getTruthValue() + " from the result");
+			LOGGER.info("Extracted truth score " + truthScore + " from the result");
 
-			out.print(mapper.writeValueAsString(mainFact));
+			mainFact.addResults(algorithm, truthScore);
 		}
+		out.print(mapper.writeValueAsString(mainFact));
 		out.close();
 	}
 }
