@@ -22,6 +22,7 @@ class Predpath(object):
 	name = 'predpath'
 
 	HOME = abspath(expanduser('./data/'))
+	
 
 	if not exists(HOME):
 		print 'Data directory not found: %s' % HOME
@@ -62,6 +63,8 @@ class Predpath(object):
 	# relational similarity
 	relsim = np.load(RELSIMPATH)
 
+	
+
 	# ================= PREDPATH ALGORITHM IMPLEMENTATION ============
 
 	
@@ -80,7 +83,18 @@ class Predpath(object):
 			'oid': [int_oid],
 			'class': [1]}
 
-#data = {'triple': [[int_sid,int_pid,int_oid], 
+		datafile = abspath(expanduser('./datasets/sample_predpath.csv'))
+		assert exists(datafile)
+		#args.dataset = datafile
+		log.info('Dataset: {}'.format(basename(datafile)))
+
+		# read data
+		df = pd.read_table(datafile, sep=',', header=0)
+		log.info('Read data: {} {}'.format(df.shape, basename(datafile)))
+		spo_df = df.dropna(axis=0, subset=['sid', 'pid', 'oid'])
+		log.info('Note: Found non-NA records: {}'.format(spo_df.shape))
+
+		#data = {'triple': [[int_sid,int_pid,int_oid], 
 					#[int_sid,int_pid,int_oid], 
 					#[int_sid,int_pid,int_oid],
 					#[int_sid,int_pid,int_oid],
@@ -91,14 +105,14 @@ class Predpath(object):
 					#[int_sid,int_pid,int_oid],
 					#[int_sid,int_pid,int_oid]],
 					#'class': [1,1,1,1,1,0,0,0,0,0]}
-		dfObj = pd.DataFrame(data)
+		#dfObj = pd.DataFrame(data)
 		#lst = [[int_sid,1], [int_pid,1], [int_oid,1]] # required for passing it to predpath_train_model
 		#dfObj = pd.DataFrame(lst, columns = ['ids','class']) 
-		print("<<<<<<<<< dfObj is %s" % (dfObj))
+		#print("<<<<<<<<< dfObj is %s" % (dfObj))
 
 		#df = pd.read_table(dfObj, sep=',', header=0)
 		#log.info('Read data: {} {}'.format(df.shape, basename(dfObj)))
-		spo_df = dfObj.dropna(axis=0, subset=['sid','pid','oid','class'])
+		#spo_df = dfObj.dropna(axis=0, subset=['sid','pid','oid','class'])
 		print("<<<<<<<<<dropna is %s" % (spo_df))
 		t1 = time()
 		log.info('Computing predpath for {} triples..'.format(spo_df.shape[0]))
