@@ -29,10 +29,10 @@ ext = [
 		extra_compile_args=['-w'],
 		extra_link_args=['-w']
 	),
-	# ====== PATHENUM (PN) ======
+	# ====== SIMRANK ======
 	Extension(
-		name='algorithms.linkpred.pathenum',
-		sources=['algorithms/linkpred/pathenum.pyx'],
+		name='algorithms.linkpred.simrank_helper',
+		sources=['algorithms/linkpred/simrank_helper.pyx'],
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w'],

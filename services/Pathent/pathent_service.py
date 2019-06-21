@@ -54,13 +54,6 @@ class Pathent(object):
 	_int64 = np.int64
 	_float = np.float
 
-	measure_map = {
-		'pathent': {
-		'measure': pathentropy,
-		'tag': 'PE'
-		}
-	}
-
 	# load knowledge graph
 	G = Graph.reconstruct(PATH, SHAPE, sym=True)  # undirected
 	assert np.all(G.csr.indices >= 0)
@@ -159,7 +152,7 @@ class Pathent(object):
 			# compute pathent
 			scores, times = self.compute_pathent(self.G, sid, pid, oid)
 
-			log.info('Katz computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
+			log.info('Pathent computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 			result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(scores[0]) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
 			print('The result in RDF format is:')
 			print(result)
