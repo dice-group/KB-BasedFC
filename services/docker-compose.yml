@@ -11,4 +11,16 @@ services:
          relklinker:
                 build: ./Relklinker
                 container_name: relklinker
-                network_mode: "host"        
+                network_mode: "host"
+         katz:
+                build: ./Katz
+                container_name: katz
+                network_mode: "host"
+         pathent:
+                build: ./Pathent
+                container_name: pathent
+                network_mode: "host"
+         simrank:
+                build: ./Simrank
+                container_name: simrank
+                network_mode: "host"
