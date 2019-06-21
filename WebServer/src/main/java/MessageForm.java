@@ -33,6 +33,8 @@ public class MessageForm {
 			client.setRoutingKey("adamic_adar.stream");
 		else if(fact.getAlgorithm().equals("jaccard"))
 			client.setRoutingKey("jaccard.stream");
+		else if(fact.getAlgorithm().equals("degree_product"))
+			client.setRoutingKey("degree_product.stream");
 
 		LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
