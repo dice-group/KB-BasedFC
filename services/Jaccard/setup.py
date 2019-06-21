@@ -28,15 +28,6 @@ ext = [
 		include_dirs=_incl,
 		extra_compile_args=['-w'],
 		extra_link_args=['-w']
-	),
-	# ====== PATHENUM (PN) ======
-	Extension(
-		name='algorithms.linkpred.pathenum',
-		sources=['algorithms/linkpred/pathenum.pyx'],
-		include_dirs=_incl,
-		extra_compile_args=['-w'],
-		extra_link_args=['-w'],
-		language='c++'
 	)
 ]
 
