@@ -25,6 +25,8 @@ public class MessageForm {
 			client.setRoutingKey("klinker.stream");
 		else if(fact.getAlgorithm().equals("katz"))
 			client.setRoutingKey("katz.stream");
+		else if(fact.getAlgorithm().equals("pathent"))
+			client.setRoutingKey("pathent.stream");
 
 		LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
