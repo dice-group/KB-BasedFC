@@ -14,11 +14,11 @@ import os
 from os.path import join, exists, abspath, expanduser
 
 # OUR METHODS
-from algorithms.linkpred.katz import katz
+from algorithms.linkpred.pathentropy import pathentropy
 
-class Katz(object):
+class Pathent(object):
 
-	name = 'katz'
+	name = 'pathent'
 
 	HOME = abspath(expanduser('./data/'))
 
@@ -55,9 +55,9 @@ class Katz(object):
 	_float = np.float
 
 	measure_map = {
-		'katz': {
-			'measure': katz,
-			'tag': 'KZ'
+		'pathent': {
+		'measure': pathentropy,
+		'tag': 'PE'
 		}
 	}
 
@@ -70,7 +70,7 @@ class Katz(object):
 
 	# ================= LINK PREDICTION ALGORITHMS ============
 
-	def compute_katz(self, G, subs, preds, objs):
+	def compute_pathent(self, G, subs, preds, objs):
 		"""
 		Performs link prediction using a specified measure, such as Katz or SimRank.
 
@@ -88,13 +88,13 @@ class Katz(object):
 			One sequence each for the proximity scores and times taken.
 		"""
 		measure_map = {
-			'katz': {
-				'measure': katz,
-				'tag': 'KZ'
+			'pathent': {
+			'measure': pathentropy,
+			'tag': 'PE'
 			}
 		}
 
-		selected_measure = 'katz'
+		selected_measure = 'pathent'
 
 		# back up
 		data = G.csr.data.copy()
@@ -142,7 +142,7 @@ class Katz(object):
 		# sid, pid, oid = self.uriToId(suri, puri, ouri)
 		sid, pid, oid = mapping.convert(suri, puri, ouri)
 
-		# required for passing it to compute_katz
+		# required for passing it to compute_pathent
 		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
 
 		t1 = time()
@@ -153,11 +153,11 @@ class Katz(object):
 		print(oid)
 		print('\n')
 
-		log.info('Computing KZ for triple')
+		log.info('Computing PE for triple')
 		with warnings.catch_warnings():
 			warnings.simplefilter("ignore")
-			# compute katz
-			scores, times = self.compute_katz(self.G, sid, pid, oid)
+			# compute pathent
+			scores, times = self.compute_pathent(self.G, sid, pid, oid)
 
 			log.info('Katz computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 			result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(scores[0]) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
