@@ -29,6 +29,12 @@ public class MessageForm {
 			client.setRoutingKey("pathent.stream");
 		else if(fact.getAlgorithm().equals("simrank"))
 			client.setRoutingKey("simrank.stream");
+		else if(fact.getAlgorithm().equals("adamic_adar"))
+			client.setRoutingKey("adamic_adar.stream");
+		else if(fact.getAlgorithm().equals("jaccard"))
+			client.setRoutingKey("jaccard.stream");
+		else if(fact.getAlgorithm().equals("degree_product"))
+			client.setRoutingKey("degree_product.stream");
 
 		LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
