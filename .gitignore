@@ -16,4 +16,4 @@ data.zip
 *.project
 factchecking-demo/node_modules/
 algorithms/
-Webserver/bin/
+*.prefs
