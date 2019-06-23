@@ -14,40 +14,23 @@ import org.json.JSONObject;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-/**
- * Servlet implementation class User_Data_Servlet
- */
 @WebServlet("/s_p_o")
-public class User_Data_Servlet extends HttpServlet {
+public class ApiController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public User_Data_Servlet() {
+	public ApiController() {
 		super();
-		// TODO Auto-generated constructor stub
 		LOGGER.info("Logger Name: " + LOGGER.getName());
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		// TODO Auto-generated method stub
 
 		BufferedReader reader = request.getReader();
 		ObjectMapper mapper = new ObjectMapper();
@@ -62,7 +45,7 @@ public class User_Data_Servlet extends HttpServlet {
 
 		LOGGER.info("Extracted values " + mainFact.getTaskId() + "," + mainFact.getSubject() + "," + mainFact.getPredicate() + "," + mainFact.getObject() + "," + mainFact.getAlgorithm());
 
-		MessageForm message = new MessageForm();
+		Processor message = new Processor();
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setHeader("Access-Control-Allow-Origin", "*");
@@ -73,15 +56,13 @@ public class User_Data_Servlet extends HttpServlet {
 				Fact subFact1 = new Fact(mainFact);
 				subFact1.setAlgorithm(algorithm);
 				try {
-					message.sendData(subFact1);
+					message.checkFact(subFact1);
 				} catch (TimeoutException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				Double truthScore = Double.valueOf(subFact1.getTruthValue());
 
 				LOGGER.info("Extracted truth score " + truthScore + " from the result");
@@ -93,17 +74,15 @@ public class User_Data_Servlet extends HttpServlet {
 			String algorithm = mainFact.getAlgorithm();
 			Fact subFact2 = new Fact(mainFact);
 			subFact2.setAlgorithm(algorithm);
-			
+
 			try {
-				message.sendData(subFact2);
+				message.checkFact(subFact2);
 			} catch (TimeoutException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			Double truthScore = Double.valueOf(subFact2.getTruthValue());
 
 			LOGGER.info("Extracted truth score " + truthScore + " from the result");

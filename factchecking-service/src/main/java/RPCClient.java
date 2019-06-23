@@ -5,6 +5,7 @@ import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 public class RPCClient {
 
@@ -13,7 +14,9 @@ public class RPCClient {
 	private static final String EXCHANGE_NAME = "nameko-rpc";
 	private String routingKey = "";
 	private String replyQueueName;
+	private static final Logger LOGGER = Logger.getLogger(RPCClient.class.getName());
 
+	
 	public RPCClient() throws IOException, TimeoutException {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setHost("localhost");
@@ -38,13 +41,13 @@ public class RPCClient {
 				.replyTo(replyQueueName)
 				.build();
 
-		//System.out.println("Triple sent to the queue!");
+		LOGGER.info("Triple sent to the queue!");
 		channel.basicPublish(EXCHANGE_NAME, routingKey, props, message.getBytes("UTF-8"));
 
 
 		final BlockingQueue<String> response = new ArrayBlockingQueue<String>(1);
 
-		//System.out.println("Processing...");
+		LOGGER.info("Processing...");
 		channel.basicConsume(replyQueueName, true, new DefaultConsumer(channel) {
 			@Override
 			public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {

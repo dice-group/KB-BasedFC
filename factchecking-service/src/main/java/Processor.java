@@ -7,11 +7,11 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class MessageForm {
-	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
+public class Processor {
+	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
 	private static AtomicLong idCounter = new AtomicLong();
 
-	public void sendData(Fact fact) throws IOException, TimeoutException, InterruptedException {
+	public void checkFact(Fact fact) throws IOException, TimeoutException, InterruptedException {
 
 		String result = "";
 		RPCClient client = new RPCClient();

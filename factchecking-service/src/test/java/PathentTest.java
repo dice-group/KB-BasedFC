@@ -9,7 +9,7 @@ import org.junit.Test;
 public class PathentTest {
 
 	private Fact fact = new Fact();
-	private MessageForm form = new MessageForm();
+	private Processor process = new Processor();
 	
 	@Before
 	public void init() {
@@ -22,7 +22,7 @@ public class PathentTest {
 	@Test
 	public void testSingle() {
 		try {
-			form.sendData(fact);
+			process.checkFact(fact);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

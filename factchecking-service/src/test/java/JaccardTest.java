@@ -9,7 +9,7 @@ import org.junit.Test;
 public class JaccardTest {
 
 	private Fact fact = new Fact();
-	private MessageForm form = new MessageForm();
+	private Processor form = new Processor();
 	
 	@Before
 	public void init() {
@@ -22,7 +22,7 @@ public class JaccardTest {
 	@Test
 	public void testSingle() {
 		try {
-			form.sendData(fact);
+			form.checkFact(fact);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
