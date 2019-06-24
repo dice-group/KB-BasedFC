@@ -18,9 +18,26 @@ import java.util.logging.Logger;
  * Servlet implementation class User_Data_Servlet
  */
 @WebServlet("/s_p_o")
-public class User_Data_Servlet extends HttpServlet {
+public class User_Data_Servlet extends HttpServlet implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
+	
+	private Fact mainFact = null;
+	private MessageForm message = null;
+	
+	
+	private Thread thread;
+	private String threadName;
+	User_Data_Servlet(String name) {
+		threadName = name;
+	}
+	
+	public void start() {
+		if (thread == null) {
+			thread = new Thread(this, threadName);
+			thread.start();
+		}
+	}
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -58,36 +75,22 @@ public class User_Data_Servlet extends HttpServlet {
 
 		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
 
-		Fact mainFact = mapper.readValue(jObject.toString(), Fact.class);
+		this.mainFact = mapper.readValue(jObject.toString(), Fact.class);
 
 		LOGGER.info("Extracted values " + mainFact.getTaskId() + "," + mainFact.getSubject() + "," + mainFact.getPredicate() + "," + mainFact.getObject() + "," + mainFact.getAlgorithm());
 
-		MessageForm message = new MessageForm();
+		this.message = new MessageForm();
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
 		if(mainFact.getAlgorithm().equals("all")) {
-			String[] algorithms = new String[] {"kstream", "relklinker", "klinker"};
-			for (String algorithm : algorithms) {
-				Fact subFact1 = new Fact(mainFact);
-				subFact1.setAlgorithm(algorithm);
-				try {
-					message.sendData(subFact1);
-				} catch (TimeoutException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				Double truthScore = Double.valueOf(subFact1.getTruthValue());
-
-				LOGGER.info("Extracted truth score " + truthScore + " from the result");
-
-				mainFact.addResults(algorithm, truthScore);
-			}
+			User_Data_Servlet thread1 = new User_Data_Servlet("kstream");
+			thread1.start();
+			User_Data_Servlet thread2 = new User_Data_Servlet("relklinker");
+			thread2.start();
+			User_Data_Servlet thread3 = new User_Data_Servlet("klinker");
+			thread3.start();
 		}
 		else {
 			String algorithm = mainFact.getAlgorithm();
@@ -112,5 +115,30 @@ public class User_Data_Servlet extends HttpServlet {
 		}
 		out.print(mapper.writeValueAsString(mainFact));
 		out.close();
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		Fact subFact1 = new Fact(mainFact);
+		subFact1.setAlgorithm(Thread.currentThread().getName());
+		try {
+			message.sendData(subFact1);
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		Double truthScore = Double.valueOf(subFact1.getTruthValue());
+	
+		LOGGER.info("Extracted truth score " + truthScore + " from the result");
+
+		mainFact.addResults(Thread.currentThread().getName(), truthScore);
 	}
 }
