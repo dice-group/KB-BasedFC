@@ -6,6 +6,7 @@ import ujson as json
 import logging as log
 import warnings
 import argparse
+import cPickle as pkl
 
 from nameko.rpc import rpc
 from time import time
@@ -83,16 +84,25 @@ class Predpath(object):
 			'oid': [int_oid],
 			'class': [1]}
 
-		datafile = abspath(expanduser('./datasets/sample_predpath.csv'))
+		# ensure input file and output directory is valid.
+		outdir = abspath(expanduser('./output'))
+		assert exists(outdir)
+		datafile = abspath(expanduser('./datasets/Player_vs_Team_NBA.csv'))
 		assert exists(datafile)
 		#args.dataset = datafile
 		log.info('Dataset: {}'.format(basename(datafile)))
+
+		# Date
+		DATE = '{}'.format(date.today())
 
 		# read data
 		df = pd.read_table(datafile, sep=',', header=0)
 		log.info('Read data: {} {}'.format(df.shape, basename(datafile)))
 		spo_df = df.dropna(axis=0, subset=['sid', 'pid', 'oid'])
 		log.info('Note: Found non-NA records: {}'.format(spo_df.shape))
+
+		# execute
+		base = splitext(basename(datafile))[0]
 
 		#data = {'triple': [[int_sid,int_pid,int_oid], 
 					#[int_sid,int_pid,int_oid], 
@@ -121,4 +131,22 @@ class Predpath(object):
 		# save model
 		predictor = { 'dictvectorizer': vec, 'model': model }
 		print("<<<<<<<<<got the results")
-		return json.dumps({'FC value': vec})
+		try:
+			outpkl = join(outdir, 'out_pra_{}_{}.pkl'.format(base, DATE))
+			with open(outpkl, 'wb') as g:
+				s = pkl.dump(predictor, g, protocol=pkl.HIGHEST_PROTOCOL)
+			print 'Saved: {}'.format(outpkl)
+			print("<<<<<<<<<file has been saved>>>>>>>>>")
+			print("<<<<<<<<<predicting the test case>>>>>>>>>")
+			X = vec.transform([["392035", "599", "2115741"]])
+			pred = model['clf'].predict(X) # array
+			print("The result is %s" % (pred))
+			#pickle_in = open("./output/out_pra_Player_vs_Team_NBA_2019-06-20.pkl","rb")
+			#example = pkl.load(pickle_in)
+			#result = example.predict(["392035", "599", "2115741"])
+			#print("The result is %s" % (results))
+		except IOError, e:
+			raise e
+		result = '<http://swc2017.aksw.org/task2/dataset/s'
+		return result
+
