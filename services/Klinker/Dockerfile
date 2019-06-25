@@ -3,7 +3,6 @@ MAINTAINER Enri Ozuni "enriozuni@hotmail.com"
 RUN mkdir klinker
 COPY . /klinker
 WORKDIR /klinker
-RUN pip install -r requirements.txt
 RUN python setup.py build_ext -if
 RUN python setup.py install
 CMD nameko run klinker_service
