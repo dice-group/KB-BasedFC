@@ -15,5 +15,4 @@ data.zip
 *.classpath
 *.project
 factchecking-demo/node_modules/
-algorithms/
 Webserver/bin/
