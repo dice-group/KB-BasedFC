@@ -24,3 +24,15 @@ services:
                 build: ./Simrank
                 container_name: simrank
                 network_mode: "host"
+         adamic_adar:
+                build: ./AdamicAdar
+                container_name: adamic_adar
+                network_mode: "host"
+         degree_product:
+                build: ./DegreeProduct
+                container_name: degree_product
+                network_mode: "host"
+         jaccard:
+                build: ./Jaccard
+                container_name: jaccard
+                network_mode: "host"
