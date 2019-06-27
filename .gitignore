@@ -16,3 +16,5 @@ data.zip
 *.project
 factchecking-demo/node_modules/
 *.prefs
+Webserver/bin/
+
