@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -34,9 +35,7 @@ public class ApiController extends HttpServlet {
 
 		BufferedReader reader = request.getReader();
 		ObjectMapper mapper = new ObjectMapper();
-
 		JSONObject jObject = new JSONObject(reader.readLine());
-
 		reader.close();
 
 		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
@@ -55,14 +54,7 @@ public class ApiController extends HttpServlet {
 			for (String algorithm : algorithms) {
 				Fact subFact1 = new Fact(mainFact);
 				subFact1.setAlgorithm(algorithm);
-				try {
-					message.checkFact(subFact1);
-				} catch (TimeoutException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
+				message.checkFact(subFact1);
 				Double truthScore = Double.valueOf(subFact1.getTruthValue());
 
 				LOGGER.info("Extracted truth score " + truthScore + " from the result");
@@ -74,15 +66,7 @@ public class ApiController extends HttpServlet {
 			String algorithm = mainFact.getAlgorithm();
 			Fact subFact2 = new Fact(mainFact);
 			subFact2.setAlgorithm(algorithm);
-
-			try {
-				message.checkFact(subFact2);
-			} catch (TimeoutException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			message.checkFact(subFact2);
 			Double truthScore = Double.valueOf(subFact2.getTruthValue());
 
 			LOGGER.info("Extracted truth score " + truthScore + " from the result");
@@ -91,5 +75,24 @@ public class ApiController extends HttpServlet {
 		}
 		out.print(mapper.writeValueAsString(mainFact));
 		out.close();
+	}
+
+	public FactCheckingHobbitResponse execT(@RequestParam(value = "taskId") String taskId,
+			@RequestParam(value = "dataISWC", required = true) String dataISWC) {
+
+		LOGGER.info("Received HOBBIT Task : "+ taskId);
+
+		Fact fact = extractFactFromISWC(dataISWC, taskId);
+		Processor message = new Processor();
+		message.checkFact(fact);
+
+		LOGGER.info("Truth score " + fact.getTruthValue() + " returned for task " + taskId);
+
+		return new FactCheckingHobbitResponse(taskId, fact.getTruthValue());
+	}
+
+	private Fact extractFactFromISWC(String dataISWC, String taskId) {
+		// TODO compute fact from the ISWC string
+		return null;
 	}
 }
