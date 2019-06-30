@@ -11,38 +11,46 @@ public class Processor {
 	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
 	private static AtomicLong idCounter = new AtomicLong();
 
-	public void checkFact(Fact fact) throws IOException, TimeoutException, InterruptedException {
+	public void checkFact(Fact fact) {
 
 		String result = "";
-		RPCClient client = new RPCClient();
-		String statement = generateRDFStatement(fact);
 
-		if(fact.getAlgorithm().equals("kstream"))
-			client.setRoutingKey("kstream.stream");
-		else if(fact.getAlgorithm().equals("relklinker"))
-			client.setRoutingKey("relklinker.stream");
-		else if(fact.getAlgorithm().equals("klinker"))
-			client.setRoutingKey("klinker.stream");
-		else if(fact.getAlgorithm().equals("katz"))
-			client.setRoutingKey("katz.stream");
-		else if(fact.getAlgorithm().equals("pathent"))
-			client.setRoutingKey("pathent.stream");
-		else if(fact.getAlgorithm().equals("simrank"))
-			client.setRoutingKey("simrank.stream");
-		else if(fact.getAlgorithm().equals("adamic_adar"))
-			client.setRoutingKey("adamic_adar.stream");
-		else if(fact.getAlgorithm().equals("jaccard"))
-			client.setRoutingKey("jaccard.stream");
-		else if(fact.getAlgorithm().equals("degree_product"))
-			client.setRoutingKey("degree_product.stream");
+		try {
+			RPCClient client = new RPCClient();
 
-		LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
+			String statement = generateRDFStatement(fact);
 
-		result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
+			if(fact.getAlgorithm().equals("kstream"))
+				client.setRoutingKey("kstream.stream");
+			else if(fact.getAlgorithm().equals("relklinker"))
+				client.setRoutingKey("relklinker.stream");
+			else if(fact.getAlgorithm().equals("klinker"))
+				client.setRoutingKey("klinker.stream");
+			else if(fact.getAlgorithm().equals("katz"))
+				client.setRoutingKey("katz.stream");
+			else if(fact.getAlgorithm().equals("pathent"))
+				client.setRoutingKey("pathent.stream");
+			else if(fact.getAlgorithm().equals("simrank"))
+				client.setRoutingKey("simrank.stream");
+			else if(fact.getAlgorithm().equals("adamic_adar"))
+				client.setRoutingKey("adamic_adar.stream");
+			else if(fact.getAlgorithm().equals("jaccard"))
+				client.setRoutingKey("jaccard.stream");
+			else if(fact.getAlgorithm().equals("degree_product"))
+				client.setRoutingKey("degree_product.stream");
 
-		LOGGER.info("Result " + result + " received from microservice");
+			LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
-		fact.setTruthValue(extractTruthValue(result));
+			result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
+
+			LOGGER.info("Result " + result + " received from microservice");
+
+			fact.setTruthValue(extractTruthValue(result));
+		} catch (IOException | TimeoutException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String generateRDFStatement(Fact fact) {

@@ -10,7 +10,7 @@ public class AdamicAdarTest {
 
 	private Fact fact = new Fact();
 	private Processor process = new Processor();
-	
+
 	@Before
 	public void init() {
 		fact.setAlgorithm("adamic_adar");
@@ -18,21 +18,10 @@ public class AdamicAdarTest {
 		fact.setPredicate("http://dbpedia.org/ontology/team");
 		fact.setObject("http://dbpedia.org/resource/Los_Angeles_Lakers");
 	}
-	
+
 	@Test
 	public void testSingle() {
-		try {
-			process.checkFact(fact);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		process.checkFact(fact);
 		assertEquals((double)0.9102392266268373, fact.getTruthValue(), 0.00001);
 	}
 }
