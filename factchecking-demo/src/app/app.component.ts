@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Fact } from './fact';
-import { FACTS } from './facts-list';
 
 export interface Algorithm {
   value: string;
@@ -23,6 +22,7 @@ export class AppComponent {
   objectURI = '';
   algorithm = '';
   // trueValue: number;
+  static FACTS: Fact[] = [];
 
   constructor(private http: HttpClient) {
 
@@ -77,8 +77,8 @@ export class AppComponent {
               let fact: Fact = JSON.parse(JSON.stringify(res));
               console.log(fact.taskId);
               console.log(fact.subject);
-              console.log(fact.truthValue);
-              FACTS.push(fact);
+              console.log(fact.results);
+              AppComponent.FACTS.push(fact);
               resolve();
             } catch (e) {
               console.log('Exception: ' + e);
