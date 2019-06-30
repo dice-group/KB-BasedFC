@@ -26,6 +26,7 @@ class Predpath(object):
 
 	HOME = abspath(expanduser('./data/'))
 	
+
 	if not exists(HOME):
 		print 'Data directory not found: %s' % HOME
 		print 'Download data per instructions on:'
@@ -65,38 +66,47 @@ class Predpath(object):
 	# relational similarity
 	relsim = np.load(RELSIMPATH)
 
-	# ================= PREDPATH ALGORITHM IMPLEMENTATION ============
+	#__________________train_______________________
 
-	
-	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def stream(self, sid, pid, oid, args=None):
-		int_sid = int(sid)
-		int_pid = int(pid)
-		int_oid = int(oid)
+	# ensure input file and output directory is valid.     
+	outdir = abspath(expanduser('./output'))
+	assert exists(outdir)
 
-		print("The subject id is: %s " % int_sid)
-		print("The predicate id is: %s" % int_pid)
-		print("The object id is: %s" % int_oid)
+        #sample data file consisting of records that is used to train the model.
+	datafile = abspath(expanduser('./datasets/sample_data_predpath.csv'))
+	assert exists(datafile)
+	log.info('Dataset: {}'.format(basename(datafile)))
 
-		# Creating a dataframe 
-		data = {'sid': [int_sid], 
-			'pid': [int_pid], 
-			'oid': [int_oid],
-			'class': [0]}
+	# Date
+	DATE = '{}'.format(date.today())
 
-		#__________________test________________________
-		dfObj = pd.DataFrame(data)
-		test_spo_df = dfObj.dropna(axis=0, subset=['sid','pid','oid','class'])
+	# read data
+	df = pd.read_table(datafile, sep=',', header=0)
+	log.info('Read data: {} {}'.format(df.shape, basename(datafile)))
+	spo_df = df.dropna(axis=0, subset=['sid', 'pid', 'oid'])
+	log.info('Note: Found non-NA records: {}'.format(spo_df.shape))
 
-		test_model_pkl = open("./output/trained_model.pkl","rb")
-		test_model = pkl.load(test_model_pkl)
+	# execute
+	base = splitext(basename(datafile))[0]
+	t1 = time()
+	log.info('Computing predpath for {} triples..'.format(spo_df.shape[0]))
 
-		test_vec_pkl = open("./output/vector_file.pkl","rb")
-		test_vec = pkl.load(test_vec_pkl)
-                 
-                # predicate_predpath() function is used to predict the triple's veracity
-		array = predpath_predict(self.G, test_spo_df,test_vec, test_model) # test
-		print("<<<<<<<<< The test is successful and the result is: %s" % (array))
+        #function that trains the model
+	vec, model = predpath_train_model(G, spo_df) # train
+	print 'Time taken: {:.2f}s\n'.format(time() - t1)
+
+	# save model
+	predictor = { 'dictvectorizer': vec, 'model': model }
+	try:
+		outpkl = join(outdir, 'trained_model.pkl')
+		with open(outpkl, 'wb') as g:
+			s = pkl.dump(model, g, protocol=pkl.HIGHEST_PROTOCOL)
+
+		outpkl_vec = join(outdir, 'vector_file.pkl')
+		with open(outpkl_vec, 'wb') as g:
+			s = pkl.dump(vec, g, protocol=pkl.HIGHEST_PROTOCOL)
 		
-		return array
-
+	except IOError, e:
+		raise e
+        
+	print("<<<<<<<<<<<<<<<<<<<<<<< The model has been trained and it is saved in the output folder >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")

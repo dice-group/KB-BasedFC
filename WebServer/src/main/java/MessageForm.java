@@ -53,6 +53,7 @@ public class MessageForm {
 
 			result = client.call("{\"args\": [392035, 599, 2115741], \"kwargs\": {}}");
 			
+			
 			LOGGER.info("Result " + result + " received from microservice");
 			
 			fact.setTruthValue(extractTruthValue(result));
