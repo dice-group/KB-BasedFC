@@ -6,6 +6,8 @@ Download data from the following [URL](https://mega.nz/#!qJU12aZa!RdUs7Uhnd5g4B4
 
 Download database used by the microservices from the following [URL](https://mega.nz/#!GAFjXIob!OsB-VtK0wtsEBHVwbghJhslgllQUp1sYLsp34bVmKu4) and decompress it inside each listed folder in the `services` subdirectory.
 
+Download database used by the microservices from the following URL https://mega.nz/#!GAFjXIob!OsB-VtK0wtsEBHVwbghJhslgllQUp1sYLsp34bVmKu4 and decompress it inside `KB-BasedFC` directory
+
 # System requirements
 
 * **OS:** Linux Ubuntu / Mac OSX 10.12 (Sierra)
