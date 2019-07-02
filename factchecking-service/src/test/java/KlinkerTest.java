@@ -6,7 +6,7 @@ import org.junit.Test;
 public class KlinkerTest {
 
 	private Fact fact = new Fact();
-	private Processor process = new Processor();
+	private PreProcessor process = new PreProcessor();
 
 	@Before
 	public void init() {

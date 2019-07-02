@@ -6,7 +6,7 @@ import org.junit.Test;
 public class JaccardTest {
 
 	private Fact fact = new Fact();
-	private Processor form = new Processor();
+	private PreProcessor form = new PreProcessor();
 
 	@Before
 	public void init() {

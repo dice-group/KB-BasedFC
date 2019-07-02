@@ -42,7 +42,7 @@ public class ApiController extends HttpServlet {
 
 		LOGGER.info("Extracted values " + mainFact.getTaskId() + "," + mainFact.getSubject() + "," + mainFact.getPredicate() + "," + mainFact.getObject() + "," + mainFact.getAlgorithm());
 
-		Processor message = new Processor();
+		PreProcessor message = new PreProcessor();
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setHeader("Access-Control-Allow-Origin", "*");

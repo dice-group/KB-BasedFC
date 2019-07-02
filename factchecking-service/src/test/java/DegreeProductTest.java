@@ -6,7 +6,7 @@ import org.junit.Test;
 public class DegreeProductTest {
 
 	private Fact fact = new Fact();
-	private Processor process = new Processor();
+	private PreProcessor process = new PreProcessor();
 
 	@Before
 	public void init() {

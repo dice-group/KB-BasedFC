@@ -2,12 +2,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class Processor {
+public class PreProcessor {
 	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
 
 	public void checkFact(Fact fact) {
