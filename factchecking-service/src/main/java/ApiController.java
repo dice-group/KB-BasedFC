@@ -11,10 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-@WebServlet("/s_p_o")
+@WebServlet("/api")
 public class ApiController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
@@ -87,6 +86,7 @@ public class ApiController extends HttpServlet {
 
 			LOGGER.info("Extracted truth score " + truthScore + " from the result");
 
+			mainFact.setTaskId(subFact2.getTaskId());
 			mainFact.addResults(algorithm, truthScore);
 		}
 		out.print(mapper.writeValueAsString(mainFact));
