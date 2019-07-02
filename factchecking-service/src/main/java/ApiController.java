@@ -14,9 +14,26 @@ import org.json.JSONObject;
 import java.util.logging.Logger;
 
 @WebServlet("/api")
-public class ApiController extends HttpServlet {
+public class ApiController extends HttpServlet implements Runnable {
+
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
+
+	private Fact mainFact = null;
+	private PreProcessor message = null;
+	private Thread thread;
+	private String threadName;
+
+	ApiController(String name) {
+		threadName = name;
+	}
+
+	public void start() {
+		if (thread == null) {
+			thread = new Thread(this, threadName);
+			thread.start();
+		}
+	}
 
 	public ApiController() {
 		super();
@@ -38,27 +55,23 @@ public class ApiController extends HttpServlet {
 
 		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
 
-		Fact mainFact = mapper.readValue(jObject.toString(), Fact.class);
+		this.mainFact = mapper.readValue(jObject.toString(), Fact.class);
 
 		LOGGER.info("Extracted values " + mainFact.getTaskId() + "," + mainFact.getSubject() + "," + mainFact.getPredicate() + "," + mainFact.getObject() + "," + mainFact.getAlgorithm());
 
-		PreProcessor message = new PreProcessor();
+		this.message = new PreProcessor();
+
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setHeader("Access-Control-Allow-Origin", "*");
 
 		if(mainFact.getAlgorithm().equals("all")) {
-			String[] algorithms = new String[] {"kstream", "relklinker", "klinker"};
-			for (String algorithm : algorithms) {
-				Fact subFact1 = new Fact(mainFact);
-				subFact1.setAlgorithm(algorithm);
-				message.checkFact(subFact1);
-				Double truthScore = Double.valueOf(subFact1.getTruthValue());
-
-				LOGGER.info("Extracted truth score " + truthScore + " from the result");
-
-				mainFact.addResults(algorithm, truthScore);
-			}
+			ApiController thread1 = new ApiController("kstream");
+			thread1.start();
+			ApiController thread2 = new ApiController("relklinker");
+			thread2.start();
+			ApiController thread3 = new ApiController("klinker");
+			thread3.start();
 		}
 		else {
 			String algorithm = mainFact.getAlgorithm();
@@ -74,6 +87,20 @@ public class ApiController extends HttpServlet {
 		}
 		out.print(mapper.writeValueAsString(mainFact));
 		out.close();
+	}
+
+	@Override
+	public void run() {
+
+		Fact subFact1 = new Fact(mainFact);
+		subFact1.setAlgorithm(Thread.currentThread().getName());
+		message.checkFact(subFact1);
+
+		Double truthScore = Double.valueOf(subFact1.getTruthValue());
+
+		LOGGER.info("Extracted truth score " + truthScore + " from the result");
+
+		mainFact.addResults(Thread.currentThread().getName(), truthScore);
 	}
 
 //	public FactCheckingHobbitResponse execT(@RequestParam(value = "taskId") String taskId,
