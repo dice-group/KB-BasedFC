@@ -17,10 +17,10 @@ import java.util.logging.Logger;
 public class ApiController extends HttpServlet implements Runnable {
 
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = Logger.getLogger(User_Data_Servlet.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
 
 	private Fact mainFact = null;
-	private Processor message = null;
+	private PreProcessor message = null;
 	private Thread thread;
 	private String threadName;
 
@@ -91,21 +91,10 @@ public class ApiController extends HttpServlet implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+
 		Fact subFact1 = new Fact(mainFact);
 		subFact1.setAlgorithm(Thread.currentThread().getName());
-		try {
-			message.sendData(subFact1);
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		message.checkFact(subFact1);
 
 		Double truthScore = Double.valueOf(subFact1.getTruthValue());
 
