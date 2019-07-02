@@ -39,6 +39,8 @@ public class RPCClient {
 				.contentType("application/json")
 				.contentEncoding("utf-8")
 				.replyTo(replyQueueName)
+				// request resides in the queue for at most 30 seconds
+				.expiration("30000")
 				.build();
 
 		LOGGER.info("Triple sent to the queue!");
