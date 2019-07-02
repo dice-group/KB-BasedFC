@@ -148,12 +148,20 @@ class Katz(object):
 
 		log.info('Computing KZ for triple')
 		with warnings.catch_warnings():
-			warnings.simplefilter("ignore")
-			# compute katz
-			scores, times = self.compute_katz(self.G, sid, pid, oid)
+			try:
+				warnings.simplefilter("ignore")
+				# compute katz
+				scores, times = self.compute_katz(self.G, sid, pid, oid)
 
-			log.info('Katz computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
-			result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(scores[0]) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
-			print('The result in RDF format is:')
-			print(result)
+				log.info('Katz computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
+				result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(
+					identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(
+					scores[0]) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
+				print('The result in RDF format is:')
+				print(result)
+
+			except MemoryError:
+				print('\nA MemoryError is successfully caught.')
+				result = 'MemoryError'
+
 		return result
