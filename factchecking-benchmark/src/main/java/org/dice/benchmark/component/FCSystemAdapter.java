@@ -34,7 +34,7 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 			throw new Exception("Service container not created");
 		} else {
 			LOGGER.debug("factcheck-service container created {}", factcheckContainer);
-			factcheckContainerUrl = "http://" + factcheckContainer + ":8080/api/hobbitTask/";
+			factcheckContainerUrl = "http://" + factcheckContainer + ":8080/factchecking-service/api/hobbitTask/";
 
 			LOGGER.debug("factcheck-service container accessible from {}", factcheckContainerUrl);
 		}

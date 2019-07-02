@@ -1,3 +1,4 @@
+package org.dice.service.api;
 
 public class FactCheckingHobbitResponse {
 	private static final String RESPONSE =

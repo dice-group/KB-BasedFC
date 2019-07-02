@@ -1,3 +1,4 @@
+package org.dice.service;
 import com.rabbitmq.client.*;
 
 import java.io.IOException;

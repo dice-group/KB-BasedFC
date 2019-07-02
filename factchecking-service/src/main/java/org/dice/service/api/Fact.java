@@ -1,3 +1,4 @@
+package org.dice.service.api;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,11 +28,11 @@ public class Fact implements Serializable {
 	@JsonProperty("results")
 	private HashMap<String, Double> results = new HashMap<String, Double>();
 	
-	Fact() {
+	public Fact() {
 		
 	}
 	
-	Fact(Fact fact) {
+	public Fact(Fact fact) {
 		this.taskId = fact.taskId;
 		this.subject = fact.subject;
 		this.predicate = fact.predicate;
