@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -77,22 +76,22 @@ public class ApiController extends HttpServlet {
 		out.close();
 	}
 
-	public FactCheckingHobbitResponse execT(@RequestParam(value = "taskId") String taskId,
-			@RequestParam(value = "dataISWC", required = true) String dataISWC) {
-
-		LOGGER.info("Received HOBBIT Task : "+ taskId);
-
-		Fact fact = extractFactFromISWC(dataISWC, taskId);
-		Processor message = new Processor();
-		message.checkFact(fact);
-
-		LOGGER.info("Truth score " + fact.getTruthValue() + " returned for task " + taskId);
-
-		return new FactCheckingHobbitResponse(taskId, fact.getTruthValue());
-	}
-
-	private Fact extractFactFromISWC(String dataISWC, String taskId) {
-		// TODO compute fact from the ISWC string
-		return null;
-	}
+//	public FactCheckingHobbitResponse execT(@RequestParam(value = "taskId") String taskId,
+//			@RequestParam(value = "dataISWC", required = true) String dataISWC) {
+//
+//		LOGGER.info("Received HOBBIT Task : "+ taskId);
+//
+//		Fact fact = extractFactFromISWC(dataISWC, taskId);
+//		Processor message = new Processor();
+//		message.checkFact(fact);
+//
+//		LOGGER.info("Truth score " + fact.getTruthValue() + " returned for task " + taskId);
+//
+//		return new FactCheckingHobbitResponse(taskId, fact.getTruthValue());
+//	}
+//
+//	private Fact extractFactFromISWC(String dataISWC, String taskId) {
+//		// TODO compute fact from the ISWC string
+//		return null;
+//	}
 }
