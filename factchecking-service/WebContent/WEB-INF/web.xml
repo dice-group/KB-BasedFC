@@ -11,6 +11,6 @@
   </welcome-file-list>
   <servlet>
     <servlet-name>Servlet</servlet-name>
-    <servlet-class>User_Data_Servlet</servlet-class>
+    <servlet-class>ApiController</servlet-class>
   </servlet>
 </web-app>
