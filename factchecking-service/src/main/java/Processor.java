@@ -9,10 +9,13 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Processor {
 	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
-	
+
 	public void checkFact(Fact fact) {
 
-		result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
+		try {
+			String result = "";
+			RPCClient client = new RPCClient();
+			String statement = generateRDFStatement(fact);
 
 			if(fact.getAlgorithm().equals("kstream"))
 				client.setRoutingKey("kstream.stream");
@@ -37,9 +40,18 @@ public class Processor {
 			else if(fact.getAlgorithm().equals("degree_product"))
 				client.setRoutingKey("degree_product.stream");
 
-		LOGGER.info("Result " + result + " received from microservice");
+			LOGGER.info("Sending " + statement + " to " + fact.getAlgorithm() + " microservice");
 
-		fact.setTruthValue(extractTruthValue(result));
+			result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
+
+			LOGGER.info("Result " + result + " received from microservice");
+
+			fact.setTruthValue(extractTruthValue(result));
+		} catch (IOException | TimeoutException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public String generateRDFStatement(Fact fact) {
