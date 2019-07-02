@@ -1,6 +1,8 @@
 .DS_Store
 *.pyc
 *.so
+*.c
+*.cpp
 venv/
 build/
 data/
