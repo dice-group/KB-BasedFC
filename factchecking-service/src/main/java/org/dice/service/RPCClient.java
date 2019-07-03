@@ -15,12 +15,17 @@ public class RPCClient {
 	private static final String EXCHANGE_NAME = "nameko-rpc";
 	private String routingKey = "";
 	private String replyQueueName;
+	public static String RABBITMQ_HOSTNAME = System.getenv("RABBITMQ_HOSTNAME");
 	private static final Logger LOGGER = Logger.getLogger(RPCClient.class.getName());
 
 	
 	public RPCClient() throws IOException, TimeoutException {
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		
+		if(RABBITMQ_HOSTNAME == null)
+			factory.setHost("localhost");
+		else
+			factory.setHost(RABBITMQ_HOSTNAME);
 
 		connection = factory.newConnection();
 		channel = connection.createChannel();
