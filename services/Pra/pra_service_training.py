@@ -72,7 +72,7 @@ class Predpath(object):
 	assert exists(outdir)
 
         #sample data file consisting of records that is used to train the model.
-	datafile = abspath(expanduser('./datasets/sample_data_predpath.csv'))
+	datafile = abspath(expanduser('./datasets/sample_data_pra.csv'))
 	assert exists(datafile)
 	log.info('Dataset: {}'.format(basename(datafile)))
 
