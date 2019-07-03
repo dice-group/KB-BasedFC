@@ -11,10 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONObject;
 
-import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
-@WebServlet("/s_p_o")
+@WebServlet("/api")
 public class ApiController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
@@ -34,9 +33,7 @@ public class ApiController extends HttpServlet {
 
 		BufferedReader reader = request.getReader();
 		ObjectMapper mapper = new ObjectMapper();
-
 		JSONObject jObject = new JSONObject(reader.readLine());
-
 		reader.close();
 
 		LOGGER.info("Received http request " + jObject.toString() + " from front-end");
@@ -45,7 +42,7 @@ public class ApiController extends HttpServlet {
 
 		LOGGER.info("Extracted values " + mainFact.getTaskId() + "," + mainFact.getSubject() + "," + mainFact.getPredicate() + "," + mainFact.getObject() + "," + mainFact.getAlgorithm());
 
-		Processor message = new Processor();
+		PreProcessor message = new PreProcessor();
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
 		response.setHeader("Access-Control-Allow-Origin", "*");
@@ -55,14 +52,7 @@ public class ApiController extends HttpServlet {
 			for (String algorithm : algorithms) {
 				Fact subFact1 = new Fact(mainFact);
 				subFact1.setAlgorithm(algorithm);
-				try {
-					message.checkFact(subFact1);
-				} catch (TimeoutException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
+				message.checkFact(subFact1);
 				Double truthScore = Double.valueOf(subFact1.getTruthValue());
 
 				LOGGER.info("Extracted truth score " + truthScore + " from the result");
@@ -74,22 +64,34 @@ public class ApiController extends HttpServlet {
 			String algorithm = mainFact.getAlgorithm();
 			Fact subFact2 = new Fact(mainFact);
 			subFact2.setAlgorithm(algorithm);
-
-			try {
-				message.checkFact(subFact2);
-			} catch (TimeoutException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
+			message.checkFact(subFact2);
 			Double truthScore = Double.valueOf(subFact2.getTruthValue());
 
 			LOGGER.info("Extracted truth score " + truthScore + " from the result");
 
+			mainFact.setTaskId(subFact2.getTaskId());
 			mainFact.addResults(algorithm, truthScore);
 		}
 		out.print(mapper.writeValueAsString(mainFact));
 		out.close();
 	}
+
+//	public FactCheckingHobbitResponse execT(@RequestParam(value = "taskId") String taskId,
+//			@RequestParam(value = "dataISWC", required = true) String dataISWC) {
+//
+//		LOGGER.info("Received HOBBIT Task : "+ taskId);
+//
+//		Fact fact = extractFactFromISWC(dataISWC, taskId);
+//		Processor message = new Processor();
+//		message.checkFact(fact);
+//
+//		LOGGER.info("Truth score " + fact.getTruthValue() + " returned for task " + taskId);
+//
+//		return new FactCheckingHobbitResponse(taskId, fact.getTruthValue());
+//	}
+//
+//	private Fact extractFactFromISWC(String dataISWC, String taskId) {
+//		// TODO compute fact from the ISWC string
+//		return null;
+//	}
 }

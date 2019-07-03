@@ -16,11 +16,12 @@ export class AppComponent {
   
   title = 'Fact Checking based on Knowledge Graph';
   apiRoot: String = 'http://localhost:8080';
-  url = `${this.apiRoot}/WebServer/s_p_o`;
+  url = `${this.apiRoot}/factchecking-service/api`;
   subjectURI = '';
   predicateURI = '';
   objectURI = '';
   algorithm = '';
+  taskId = 0;
   // trueValue: number;
   static FACTS: Fact[] = [];
 
@@ -32,8 +33,15 @@ export class AppComponent {
     {value: 'kstream', viewValue: 'Knowledge Stream'},
     {value: 'relklinker', viewValue: 'Relational Knowledge Linker'},
     {value: 'klinker', viewValue: 'Knowledge Linker'},
-    {value: 'predpath', viewValue: 'Predpath'},
-    {value: 'all', viewValue: 'All of the abve'}
+    {value: 'predpath', viewValue: 'Predicate Path Mining'},
+    {value: 'pra', viewValue: 'Path Ranking Algorithm'},
+    {value: 'katz', viewValue: 'Katz'},
+    {value: 'pathent', viewValue: 'PathEnt'},
+    {value: 'simrank', viewValue: 'SimRank'},
+    {value: 'adamic_adar', viewValue: 'Adamic & Adar'},
+    {value: 'jaccard', viewValue: 'Jaccard'},
+    {value: 'degree_product', viewValue: 'Degree Product'},
+    {value: 'all', viewValue: 'All of the above'}
   ];
 
   selectedAlgorithm(value) {
@@ -56,9 +64,10 @@ export class AppComponent {
    */
   submitData() {
     let obj;
-    obj = {'subject': this.subjectURI, 'predicate': this.predicateURI, 'object': this.objectURI, 'algorithm': this.algorithm}
+    obj = {'taskId': this.taskId, 'subject': this.subjectURI, 'predicate': this.predicateURI, 'object': this.objectURI, 'algorithm': this.algorithm}
     const myJSON = JSON.stringify(obj);
     this.sendToApi(myJSON);
+    this.taskId++;
   }
 
   /**

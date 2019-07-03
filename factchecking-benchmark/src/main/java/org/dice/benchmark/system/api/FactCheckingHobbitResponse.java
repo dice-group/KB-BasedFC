@@ -2,9 +2,6 @@ package org.dice.benchmark.system.api;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.dice.benchmark.BenchmarkConstants;
-
-import java.io.Serializable;
 
 public class FactCheckingHobbitResponse {
 	private String taskId;

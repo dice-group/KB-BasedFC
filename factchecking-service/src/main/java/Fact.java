@@ -32,6 +32,7 @@ public class Fact implements Serializable {
 	}
 	
 	Fact(Fact fact) {
+		this.taskId = fact.taskId;
 		this.subject = fact.subject;
 		this.predicate = fact.predicate;
 		this.object = fact.object;
