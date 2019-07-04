@@ -45,7 +45,7 @@ services:
                 container_name: predpath
                 network_mode: "host"
          rabbitmq:
-                image: "rabbitmq:management"
+                image: "rabbitmq:3-management"
                 container_name: rabbitmq
                 restart: always
                 ports:
