@@ -69,7 +69,35 @@ class Predpath(object):
 
 	
 	@rpc	# Methods are exposed to the outside world with entrypoint decorators (RPC in our case)
-	def stream(self, sid, pid, oid, args=None):
+	def stream(self, data, args=None):
+
+		print('\nThe following request in RDF format was passed:')
+		print(data)
+
+		identification, theDate, suri, puri, ouri = extract.getValues(data)
+
+		print('\nSURI, PURI and OURI are:')
+		print(suri)
+		print(puri)
+		print(ouri)
+		print('\n')
+
+		# sid, pid, oid = self.uriToId(suri, puri, ouri)
+		sid, pid, oid = mapping.convert(suri, puri, ouri)
+
+		# required for passing it to compute_mincostflow
+		sid, pid, oid = np.array([sid]), np.array([pid]), np.array([oid])
+
+		t1 = time()
+
+		print('\nTheir corresponding IDs are:')
+		print(sid)
+		print(pid)
+		print(oid)
+		print('\n')
+
+		log.info('Computing Predpath for triple')
+
 		int_sid = int(sid)
 		int_pid = int(pid)
 		int_oid = int(oid)
@@ -93,11 +121,20 @@ class Predpath(object):
 
 		test_vec_pkl = open("./output/vector_file.pkl","rb")
 		test_vec = pkl.load(test_vec_pkl)
-                 
-                # predicate_predpath() function is used to predict the triple's veracity
-		array = predpath_predict(self.G, test_spo_df,test_vec, test_model) # test
-		print("<<<<<<<<< The test is successful and the result is: %s" % (array))
+                with warnings.catch_warnings():
+			try:
+				warnings.simplefilter("ignore")
+				# predicate_predpath() function is used to predict the triple's veracity
+				array_value = predpath_predict(self.G, test_spo_df,test_vec, test_model) # test
+				log.info('Predpath computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
+				result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(
+					identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(
+					array_value) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
+				print('The result in RDF format is:')
+				print(result)
+
+			except MemoryError:
+				print('\nA MemoryError is successfully caught.')
+				result = 'MemoryError'
 		
-		return array
-
-
+		return result
