@@ -1,21 +1,32 @@
 package org.dice.benchmark.component;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.jena.rdf.model.NodeIterator;
+import org.apache.jena.rdf.model.Property;
+import org.apache.jena.rdf.model.ResIterator;
+import org.apache.jena.vocabulary.RDF;
 import org.dice.benchmark.BenchmarkConstants;
 import org.dice.benchmark.system.api.Client;
+import org.dice.benchmark.system.api.FactCheckingHobbitResponse;
 import org.hobbit.core.Constants;
 import org.hobbit.core.components.AbstractSystemAdapter;
-import org.dice.benchmark.system.api.FactCheckingHobbitResponse;
+import org.hobbit.vocab.HOBBIT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.*;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-
-import java.io.IOException;
 
 public class FCSystemAdapter extends AbstractSystemAdapter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FCSystemAdapter.class);
+	private Map<String, String> parameters = new HashMap<>();
 	private String factcheckingContainer;
 	private String factcheckingContainerUrl;
 	private String rabbitmqContainer;
@@ -28,6 +39,21 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 
 		super.init();
 		LOGGER.debug("Init()");
+		
+		//Getting value of algorithm parameter from system.ttl
+		//FIXME read algorithm value from system.ttl and pass it to FC system
+        Property parameter;
+        NodeIterator objIterator;
+        ResIterator resIterator = systemParamModel.listResourcesWithProperty(RDF.type, HOBBIT.Parameter);
+        Property defaultValProperty = systemParamModel.getProperty(BenchmarkConstants.SYSTEM_URI + "#algorithm");
+        while (resIterator.hasNext()) {
+            parameter = systemParamModel.getProperty(resIterator.next().getURI());
+            objIterator = systemParamModel.listObjectsOfProperty(parameter, defaultValProperty);
+            while (objIterator.hasNext()) {
+                String value = objIterator.next().asLiteral().getString();
+                parameters.put(parameter.getLocalName(), value);
+            }
+        }
 
 		//Create rabbitmq container
 		rabbitmqContainer = createContainer(BenchmarkConstants.RABBITMQ_IMAGE_NAME, Constants.CONTAINER_TYPE_BENCHMARK,
@@ -82,6 +108,8 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 
 			LOGGER.debug("factchecking-service container accessible from {}", factcheckingContainerUrl);
 		}
+		
+		//TODO create containers of remaining microservices
 	}
 
 	@Override
@@ -92,6 +120,7 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 
 	@Override
 	public void receiveGeneratedTask(String taskId, byte[] data) {
+		// handle the incoming task and create a result
 		LOGGER.debug("receiveGeneratedTask({})->{}", taskId, new String(data));
 
 		MultiValueMap<String, Object> map = new LinkedMultiValueMap<String, Object>();
@@ -101,6 +130,7 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 		Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, factcheckingContainerUrl);
 		ResponseEntity<FactCheckingHobbitResponse> response = client.getResponse(HttpMethod.POST);
 
+		// Send the result to the evaluation storage
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
 
 			FactCheckingHobbitResponse result = response.getBody();
@@ -125,7 +155,7 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 
 	@Override
 	public void close() throws IOException {
-
+		// Free the resources you requested here
 		LOGGER.debug("close()");
 
 		if (!factcheckingContainer.isEmpty())

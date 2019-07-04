@@ -13,6 +13,9 @@ import org.dice.service.api.Fact;
 public class PreProcessor {
 	private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
+	/*
+	 * Retrieves the truth score of the fact
+	 */
 	public void checkFact(Fact fact) {
 
 		try {
@@ -20,6 +23,7 @@ public class PreProcessor {
 			RPCClient client = new RPCClient();
 			String statement = generateRDFStatement(fact);
 
+			//set the Routing Key for RabbitMQ client
 			if(fact.getAlgorithm().equals("kstream"))
 				client.setRoutingKey("kstream.stream");
 			else if(fact.getAlgorithm().equals("relklinker"))
@@ -55,6 +59,9 @@ public class PreProcessor {
 		}
 	}
 
+	/*
+	 * This method generates ISWC string based on fact values
+	 */
 	public String generateRDFStatement(Fact fact) {
 		String date = getDate();
 		long id = fact.getTaskId();
@@ -84,6 +91,9 @@ public class PreProcessor {
 		return date;
 	}
 
+	/*
+	 * This method extracts the truth score from ISWC string
+	 */
 	private double extractTruthValue(String result) {
 		String[] valuesInQuotes = StringUtils.substringsBetween(result , "\\\"", "\\\"");
 		return Double.parseDouble(valuesInQuotes[0]);
