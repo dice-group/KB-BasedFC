@@ -7,6 +7,8 @@ import logging as log
 import warnings
 import argparse
 import cPickle as pkl
+import mapping
+import extract
 
 from nameko.rpc import rpc
 from time import time
