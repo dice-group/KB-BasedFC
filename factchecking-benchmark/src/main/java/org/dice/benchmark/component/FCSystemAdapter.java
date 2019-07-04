@@ -16,8 +16,12 @@ import java.io.IOException;
 public class FCSystemAdapter extends AbstractSystemAdapter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FCSystemAdapter.class);
-	private String factcheckContainer;
-	private String factcheckContainerUrl;
+	private String factcheckingContainer;
+	private String factcheckingContainerUrl;
+	private String rabbitmqContainer;
+	private String kstreamContainer;
+	private String klinkerContainer;
+	private String relklinkerContainer;
 
 	@Override
 	public void init() throws Exception {
@@ -25,18 +29,58 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 		super.init();
 		LOGGER.debug("Init()");
 
-		//Create factchecking-service container
-		factcheckContainer = createContainer(BenchmarkConstants.FACTCHECK_SERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+		//Create rabbitmq container
+		rabbitmqContainer = createContainer(BenchmarkConstants.RABBITMQ_IMAGE_NAME, Constants.CONTAINER_TYPE_BENCHMARK,
 				new String[]{});
 
-		if (factcheckContainer.isEmpty()) {
-			LOGGER.debug("Error while creating factcheck-service container {}", factcheckContainer);
+		if (rabbitmqContainer.isEmpty()) {
+			LOGGER.debug("Error while creating rabbitmq container {}", rabbitmqContainer);
+			throw new Exception("Rabbitmq container not created");
+		} else
+			LOGGER.debug("Rabbitmq container created {}", rabbitmqContainer);
+
+		//Create kstream container
+		kstreamContainer = createContainer(BenchmarkConstants.KSTREAM_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (kstreamContainer.isEmpty()) {
+			LOGGER.debug("Error while creating kstream container {}", kstreamContainer);
+			throw new Exception("Kstream container not created");
+		} else
+			LOGGER.debug("Kstream container created {}", kstreamContainer);
+
+		//Create klinker container
+		klinkerContainer = createContainer(BenchmarkConstants.KLINKER_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (klinkerContainer.isEmpty()) {
+			LOGGER.debug("Error while creating klinker container {}", klinkerContainer);
+			throw new Exception("Klinker container not created");
+		} else
+			LOGGER.debug("Klinker container created {}", klinkerContainer);
+
+		//Create relklinker container
+		relklinkerContainer = createContainer(BenchmarkConstants.RELKLINKER_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (relklinkerContainer.isEmpty()) {
+			LOGGER.debug("Error while creating relklinker container {}", relklinkerContainer);
+			throw new Exception("Relklinker container not created");
+		} else
+			LOGGER.debug("Relklinker container created {}", relklinkerContainer);
+
+		//Create factchecking-service container
+		factcheckingContainer = createContainer(BenchmarkConstants.FACTCHECKING_SERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (factcheckingContainer.isEmpty()) {
+			LOGGER.debug("Error while creating factchecking-service container {}", factcheckingContainer);
 			throw new Exception("Service container not created");
 		} else {
-			LOGGER.debug("factcheck-service container created {}", factcheckContainer);
-			factcheckContainerUrl = "http://" + factcheckContainer + ":8080/api/hobbitTask/";
+			LOGGER.debug("factchecking-service container created {}", factcheckingContainer);
+			factcheckingContainerUrl = "http://" + factcheckingContainer + ":8080/factchecking-service/api/hobbitTask/";
 
-			LOGGER.debug("factcheck-service container accessible from {}", factcheckContainerUrl);
+			LOGGER.debug("factchecking-service container accessible from {}", factcheckingContainerUrl);
 		}
 	}
 
@@ -54,7 +98,7 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 		map.add("dataISWC", data);
 		map.add("taskId", taskId);
 
-		Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, factcheckContainerUrl);
+		Client client = new Client(map, MediaType.MULTIPART_FORM_DATA, factcheckingContainerUrl);
 		ResponseEntity<FactCheckingHobbitResponse> response = client.getResponse(HttpMethod.POST);
 
 		if (response.getStatusCode().equals(HttpStatus.OK)) {
@@ -84,8 +128,16 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 
 		LOGGER.debug("close()");
 
-        if (!factcheckContainer.isEmpty())
-            stopContainer(factcheckContainer);
+		if (!factcheckingContainer.isEmpty())
+			stopContainer(factcheckingContainer);
+		if (!rabbitmqContainer.isEmpty())
+			stopContainer(rabbitmqContainer);
+		if (!kstreamContainer.isEmpty())
+			stopContainer(kstreamContainer);
+		if (!klinkerContainer.isEmpty())
+			stopContainer(klinkerContainer);
+		if (!relklinkerContainer.isEmpty())
+			stopContainer(relklinkerContainer);
 
 		super.close();
 	}

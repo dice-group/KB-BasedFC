@@ -1,5 +1,7 @@
 import static org.junit.Assert.assertEquals;
 
+import org.dice.service.PreProcessor;
+import org.dice.service.api.Fact;
 import org.junit.Before;
 import org.junit.Test;
 

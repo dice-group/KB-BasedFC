@@ -1,3 +1,5 @@
+package org.dice.service;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -5,9 +7,11 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.dice.service.api.Controller;
+import org.dice.service.api.Fact;
 
 public class PreProcessor {
-	private static final Logger LOGGER = Logger.getLogger(ApiController.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(Controller.class.getName());
 
 	public void checkFact(Fact fact) {
 
@@ -46,9 +50,7 @@ public class PreProcessor {
 			LOGGER.info("Result " + result + " received from microservice");
 
 			fact.setTruthValue(extractTruthValue(result));
-		} catch (IOException | TimeoutException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
+		} catch (IOException | TimeoutException | InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
