@@ -36,3 +36,11 @@ services:
                 build: ./Jaccard
                 container_name: jaccard
                 network_mode: "host"
+         pra:
+                build: ./Pra
+                container_name: pra
+                network_mode: "host"
+         predpath:
+                build: ./Predpath
+                container_name: predpath
+                network_mode: "host"
