@@ -51,7 +51,8 @@ public class Controller {
 		PreProcessor message = new PreProcessor();
 
 		if(mainFact.getAlgorithm().equals("all")) {
-			String[] algorithms = new String[] {"kstream", "relklinker", "klinker"};
+			String[] algorithms = new String[] {"kstream", "relklinker", "klinker", "predpath", 
+					"pra", "katz", "pathent", "simrank", "adamic_adar", "jaccard", "degree_product"};
 			for (String algorithm : algorithms) {
 				Fact subFact1 = new Fact(mainFact);
 				subFact1.setAlgorithm(algorithm);
