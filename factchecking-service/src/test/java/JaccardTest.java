@@ -21,6 +21,6 @@ public class JaccardTest {
 	@Test
 	public void testSingle() {
 		form.checkFact(fact);
-		assertEquals((double)0.0016583747927, fact.getTruthValue(), 0.00001);
+		assertEquals((double)0.9351865371944029, fact.getTruthValue(), 0.00001);
 	}
 }
