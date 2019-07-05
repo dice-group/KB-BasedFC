@@ -4,6 +4,7 @@ import warnings
 import logging as log
 import mapping
 import extract
+import normalization
 
 from nameko.rpc import rpc
 from datastructures.rgraph import Graph
@@ -153,10 +154,12 @@ class AdamicAdar(object):
 				# compute adamic_adar
 				scores, times = self.compute_adamic_adar(self.G, sid, pid, oid)
 
+				normalizedScore = normalization.score(scores[0])
+
 				log.info('AdamicAdar computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 				result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(
 					identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(
-					scores[0]) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
+					normalizedScore) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
 				print('The result in RDF format is:')
 				print(result)
 
