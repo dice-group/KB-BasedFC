@@ -6,6 +6,8 @@ public class BenchmarkConstants {
 	public static String GIT_REPO_PATH = "git.project-hobbit.eu:4567/" + GIT_USERNAME + "/";
 	public static String PROJECT_NAME = "factchecking-benchmark";
 	
+	public static final String SYSTEM_URI = "http://dice.cs.uni-paderborn.de/"+PROJECT_NAME+"/system";
+	
 	public static final String FACTCHECKING_SERVICE_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "/factchecking-service";
 	public static final String RABBITMQ_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "/rabbitmq";
 	public static final String KSTREAM_MICROSERVICE_IMAGE_NAME = GIT_REPO_PATH + PROJECT_NAME + "/kstream-microservice";
