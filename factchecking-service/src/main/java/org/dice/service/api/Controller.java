@@ -34,6 +34,9 @@ public class Controller {
 		return "Welcome to KB-Based-Factchecking";
 	}
 
+	/*
+	 * This method handles the incoming requests from Front-End
+	 */
 	@POST
 	@Path("/execTask/")
 	public Response execT(String request) throws JsonParseException, JsonMappingException, IOException {
@@ -83,6 +86,9 @@ public class Controller {
 				.build();
 	}
 
+	/*
+	 * This method handles the incoming requests from Hobbit Platform
+	 */
 	@POST
 	@Path("/hobbitTask/")
 	public FactCheckingHobbitResponse execT(@PathParam(value = "taskId") String taskId,

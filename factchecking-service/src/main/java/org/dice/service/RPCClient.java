@@ -18,7 +18,10 @@ public class RPCClient {
 	public static String RABBITMQ_HOSTNAME = System.getenv("RABBITMQ_HOSTNAME");
 	private static final Logger LOGGER = Logger.getLogger(RPCClient.class.getName());
 
-	
+	/*
+	 * Establishes new connection to RabbitMQ Server, creates a channel with Topic exchange,
+	 * binds a reply queue to the created channel
+	 */
 	public RPCClient() throws IOException, TimeoutException {
 		ConnectionFactory factory = new ConnectionFactory();
 		
@@ -36,6 +39,10 @@ public class RPCClient {
 
 	}
 
+	/*
+	 * Defines properties for the message being published,
+	 * handles the response sent to the binded reply queue
+	 */
 	public String call(String message) throws IOException, TimeoutException, InterruptedException {
 		final String corrId = UUID.randomUUID().toString();
 
