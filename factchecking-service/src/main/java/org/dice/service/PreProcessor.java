@@ -47,7 +47,7 @@ public class PreProcessor {
 
 			result = client.call("{\"args\": [\"" + statement + "\"], \"kwargs\": {}}");
 
-			LOGGER.info("Result " + result + " received from microservice");
+			LOGGER.info("Result " + result + " received from " + fact.getAlgorithm() + " microservice");
 
 			fact.setTruthValue(extractTruthValue(result));
 		} catch (IOException | TimeoutException | InterruptedException e) {
