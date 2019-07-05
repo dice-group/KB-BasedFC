@@ -21,6 +21,6 @@ public class KstreamTest {
 	@Test
 	public void testSingle() {
 		process.checkFact(fact);
-		assertEquals((double)0.08862923190529146, fact.getTruthValue(), 0.00001);
+		assertEquals((double)0.5846039689571362, fact.getTruthValue(), 0.00001);
 	}
 }
