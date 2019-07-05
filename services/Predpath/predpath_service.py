@@ -118,7 +118,7 @@ class Predpath(object):
 		dfObj = pd.DataFrame(data)
 		test_spo_df = dfObj.dropna(axis=0, subset=['sid','pid','oid','class'])
 
-		test_model_pkl = open("./output/trained_model.pkl","rb")
+		test_model_pkl = open("./output/trained_predpath_model.pkl","rb")
 		test_model = pkl.load(test_model_pkl)
 
 		test_vec_pkl = open("./output/vector_file.pkl","rb")
