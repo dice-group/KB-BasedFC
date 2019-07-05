@@ -21,6 +21,6 @@ public class AdamicAdarTest {
 	@Test
 	public void testSingle() {
 		process.checkFact(fact);
-		assertEquals((double)0.9102392266268373, fact.getTruthValue(), 0.00001);
+		assertEquals((double)1.0, fact.getTruthValue(), 0.00001);
 	}
 }
