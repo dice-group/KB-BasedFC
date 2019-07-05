@@ -97,7 +97,7 @@ class Pra(object):
 		print(oid)
 		print('\n')
 
-log.info('Computing Predpath for triple')
+		log.info('Computing Predpath for triple')
 		int_sid = int(sid)
 		int_pid = int(pid)
 		int_oid = int(oid)
@@ -140,4 +140,3 @@ log.info('Computing Predpath for triple')
 				result = 'MemoryError'
 		
 		return result
-
