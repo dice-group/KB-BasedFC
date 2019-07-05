@@ -1,16 +1,15 @@
 import static org.junit.Assert.assertEquals;
 
-import java.io.IOException;
-import java.util.concurrent.TimeoutException;
-
+import org.dice.service.PreProcessor;
+import org.dice.service.api.Fact;
 import org.junit.Before;
 import org.junit.Test;
 
 public class JaccardTest {
 
 	private Fact fact = new Fact();
-	private Processor form = new Processor();
-	
+	private PreProcessor form = new PreProcessor();
+
 	@Before
 	public void init() {
 		fact.setAlgorithm("jaccard");
@@ -18,21 +17,10 @@ public class JaccardTest {
 		fact.setPredicate("http://dbpedia.org/ontology/team");
 		fact.setObject("http://dbpedia.org/resource/Los_Angeles_Lakers");
 	}
-	
+
 	@Test
 	public void testSingle() {
-		try {
-			form.checkFact(fact);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		assertEquals((double)0.0016583747927, fact.getTruthValue(), 0.00001);
+		form.checkFact(fact);
+		assertEquals((double)0.9351865371944029, fact.getTruthValue(), 0.00001);
 	}
 }

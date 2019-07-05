@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import {MatCardModule} from '@angular/material/card';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import { ResultsComponent } from './results/results.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { ResultsComponent } from './results/results.component';
     FormsModule,
     HttpClientModule,
     MatCardModule,
-    MatToolbarModule
+    MatToolbarModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

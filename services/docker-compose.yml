@@ -2,37 +2,63 @@ version: '3.4'
 services:
          kstream:
                 build: ./Kstream
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/kstream-microservice
                 container_name: kstream
                 network_mode: "host"
          klinker:
                 build: ./Klinker
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/klinker-microservice
                 container_name: klinker
                 network_mode: "host"    
          relklinker:
                 build: ./Relklinker
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/relklinker-microservice
                 container_name: relklinker
                 network_mode: "host"
          katz:
                 build: ./Katz
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/katz-microservice
                 container_name: katz
                 network_mode: "host"
          pathent:
                 build: ./Pathent
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/pathent-microservice
                 container_name: pathent
                 network_mode: "host"
          simrank:
                 build: ./Simrank
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/simrank-microservice
                 container_name: simrank
                 network_mode: "host"
          adamic_adar:
                 build: ./AdamicAdar
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/adamicadar-microservice
                 container_name: adamic_adar
                 network_mode: "host"
          degree_product:
                 build: ./DegreeProduct
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/degreeproduct-microservice
                 container_name: degree_product
                 network_mode: "host"
          jaccard:
                 build: ./Jaccard
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/jaccard-microservice
                 container_name: jaccard
                 network_mode: "host"
+         pra:
+                build: ./Pra
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/pra-microservice
+                container_name: pra
+                network_mode: "host"
+         predpath:
+                build: ./Predpath
+                image: git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/predpath-microservice
+                container_name: predpath
+                network_mode: "host"
+         rabbitmq:
+                image: "rabbitmq:3-management"
+                container_name: rabbitmq
+                restart: always
+                ports:
+                  - "5672:5672"
+                  - "15672:15672"

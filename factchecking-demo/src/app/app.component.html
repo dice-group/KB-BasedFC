@@ -1,35 +1,38 @@
+<form [formGroup]="factForm" autocomplete="off" novalidate (ngSubmit)="createFact(factForm.value)">
 <div class="example-container">
-    <mat-toolbar color="primary">{{title}}</mat-toolbar>
-    <mat-form-field class="example-full-width" la>
-      <input matInput placeholder="Subject" [(ngModel)]="subjectURI">
-      <mat-hint>Enter a subject uri</mat-hint>
-    </mat-form-field>
-  
-    <mat-form-field class="example-full-width">
-      <input matInput placeholder="Predicate" [(ngModel)]="predicateURI">
-      <mat-hint>Enter a predicate uri</mat-hint>
-    </mat-form-field>
+  <mat-toolbar color="primary">{{title}}</mat-toolbar>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="Subject" formControlName="subjectURI" id="subjectURI" required>
+    <mat-hint align="end">Enter the subject URI</mat-hint>
+    <mat-error>Invalid URI</mat-error>
+  </mat-form-field>
 
-    <mat-form-field class="example-full-width">
-      <input matInput placeholder="Object" [(ngModel)]="objectURI">
-      <mat-hint>Enter a object uri</mat-hint>
-    </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="Predicate" formControlName="predicateURI" id="predicateURI" required>
+    <mat-hint align="end">Enter the predicate URI</mat-hint>
+    <mat-error>Invalid URI</mat-error>
+  </mat-form-field>
 
-    <mat-form-field>
-      <mat-label>FC Algorithm</mat-label>
-      <mat-select (selectionChange)='selectedAlgorithm($event.value)'>
-        <mat-option *ngFor="let algorithm of algorithms" [value]="algorithm.value">
-          {{algorithm.viewValue}}
-        </mat-option>
-      </mat-select>
-      <mat-hint>Select any algorithm</mat-hint>
-    </mat-form-field>
+  <mat-form-field class="example-full-width">
+    <input matInput type="text" placeholder="Object" formControlName="objectURI" id="objectURI" required>
+    <mat-hint align="end">Enter the object URI</mat-hint>
+    <mat-error>Invalid URI</mat-error>
+  </mat-form-field>
 
-    <div class="example-button-row">
-      <button mat-raised-button color="primary" (click)="submitData()">Submit</button>
-      <button mat-raised-button color="primary" (click)="resetEverything()">Reset</button>
-    </div>
-    
-    <app-results></app-results>
+  <mat-form-field>
+    <mat-label>FC Algorithm</mat-label>
+    <mat-select formControlName="selectedAlgorithm">
+      <mat-option *ngFor="let algorithm of algorithms" [value]="algorithm.value">
+        {{algorithm.viewValue}}
+      </mat-option>
+    </mat-select>
+    <mat-hint align="end">Select any algorithm</mat-hint>
+  </mat-form-field>
+
+  <div class="example-button-row">
+    <button mat-raised-button color="primary" [disabled]="!factForm.valid">Submit</button>
+    <button mat-raised-button color="primary" (click)="resetEverything()">Reset</button>
   </div>
-  
+  <app-results></app-results>
+</div>
+</form>

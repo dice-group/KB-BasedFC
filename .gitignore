@@ -1,13 +1,14 @@
 .DS_Store
 *.pyc
 *.so
+*.c
+*.cpp
 venv/
 build/
 data/
 dist/
 database/
 knowledgestream.egg-info/
-output/
 .metadata/
 .idea/
 data.zip
