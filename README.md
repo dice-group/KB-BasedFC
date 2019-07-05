@@ -35,5 +35,5 @@ To build the Docker images and run the Docker containers altogether:<br>
  If you wish to train the model with different set of records. You will have to run the following code. <br>
 ```python ./predpath_service_training.py``` or ```python ./pra_service_training.py``` accordingly.
 
-**Note:** Change the path at line number *76* <br>
+**Note:** Change the path under *stream* function to that particular file location <br>
 `datafile = abspath(expanduser('./datasets/sample_data_predpath.csv'))` and make sure you are in their respective folders.
