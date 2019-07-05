@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Fact } from './fact';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 export interface Algorithm {
   value: string;
@@ -14,23 +15,33 @@ export interface Algorithm {
 })
 export class AppComponent {
   
+  public factForm: FormGroup;
+
   title = 'Fact Checking based on Knowledge Graph';
   apiRoot: String = 'http://localhost:8080';
   url = `${this.apiRoot}/factchecking-service/api/execTask/`;
-  subjectURI = '';
-  predicateURI = '';
-  objectURI = '';
-  algorithm = '';
   taskId = 0;
-  // trueValue: number;
   static FACTS: Fact[] = [];
 
   constructor(private http: HttpClient) {
+    this.createForm();
+  }
 
+  /**
+   * Does form validation
+   */
+  createForm() {
+    const reg = '(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?';
+    this.factForm = new FormGroup({
+      subjectURI: new FormControl('', [Validators.pattern(reg)]),
+      predicateURI: new FormControl('', [Validators.pattern(reg)]),
+      objectURI: new FormControl('', [Validators.pattern(reg)]),
+      selectedAlgorithm: new FormControl('kstream', [])
+    });
   }
 
   algorithms: Algorithm[] = [
-    {value: 'kstream', viewValue: 'Knowledge Stream'},
+    {value: 'kstream', viewValue: 'Knowledge Stream (default)'},
     {value: 'relklinker', viewValue: 'Relational Knowledge Linker'},
     {value: 'klinker', viewValue: 'Knowledge Linker'},
     {value: 'predpath', viewValue: 'Predicate Path Mining'},
@@ -44,40 +55,47 @@ export class AppComponent {
     {value: 'all', viewValue: 'All of the above'}
   ];
 
-  selectedAlgorithm(value) {
-    this.algorithm = value;
+  /**
+   * Creates a fact using form values
+   */
+  public createFact = (factFormValue) => {
+    if (this.factForm.valid) {
+      let fact: Fact = {
+        taskId: this.taskId++,
+        subject: factFormValue.subjectURI,
+        predicate: factFormValue.predicateURI,
+        object: factFormValue.objectURI,
+        algorithm: factFormValue.selectedAlgorithm
+      }
+      this.submitData(fact);
+    }
   }
 
   /**
    * Resets all the variables value to default.
    */
   resetEverything() {
-    this.subjectURI = '';
-    this.predicateURI = '';
-    this.objectURI = '';
-    this.algorithm = '';
+    this.factForm.setValue({subjectURI: "", predicateURI: "", objectURI: "", selectedAlgorithm: ""});
     console.log('All values have been reset!')
   }
 
   /**
    * Called when user clicks on submit button.
    */
-  submitData() {
-    let obj;
-    obj = {'taskId': this.taskId, 'subject': this.subjectURI, 'predicate': this.predicateURI, 'object': this.objectURI, 'algorithm': this.algorithm}
-    const myJSON = JSON.stringify(obj);
-    this.sendToApi(myJSON);
-    this.taskId++;
+  submitData(fact: Fact) {
+    const factJSON = JSON.stringify(fact);
+    console.log('FACT: ' + factJSON);
+    this.sendToApi(factJSON);
   }
 
   /**
    * Sends request to back-end
-   * @param myJSON string
+   * @param factJSON string
    */
-  sendToApi(myJSON: string) {
+  sendToApi(factJSON: string) {
     const promise = new Promise((resolve, reject) => {
-      console.log('Send Request to: ' + this.url);
-      this.http.post(this.url, myJSON)
+      console.log('Request sent to: ' + this.url);
+      this.http.post(this.url, factJSON)
         .toPromise()
         .then(
           res => {

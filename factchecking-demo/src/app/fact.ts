@@ -1,9 +1,9 @@
 export class Fact {
-    taskId: number;
+    taskId?: number;
     subject: string;
     predicate: string;
     object: string;
     algorithm: string;
-    averageTruthValue: number;
-    results: Map<string, number>;
+    averageTruthValue?: number;
+    results?: Map<string, number>;
 }
