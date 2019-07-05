@@ -1,3 +1,4 @@
+docker tag rabbitmq:3-management git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/rabbitmq
 docker push git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/rabbitmq &&
 docker push git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/kstream-microservice &&
 docker push git.project-hobbit.eu:4567/factcheckingdemo/factchecking-benchmark/klinker-microservice &&
