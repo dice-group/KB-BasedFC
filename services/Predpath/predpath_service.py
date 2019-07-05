@@ -128,10 +128,11 @@ class Predpath(object):
 				warnings.simplefilter("ignore")
 				# predicate_predpath() function is used to predict the triple's veracity
 				array_value = predpath_predict(self.G, test_spo_df,test_vec, test_model) # test
+				val = str(array_value)[1:-1]
 				log.info('Predpath computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 				result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(
 					identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(
-					array_value) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
+					val) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
 				print('The result in RDF format is:')
 				print(result)
 
