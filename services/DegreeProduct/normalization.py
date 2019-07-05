@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 def score(value):
-	df = pd.read_csv('simrank.csv', sep=',')
+	df = pd.read_csv('degree_product.csv', sep=',')
 
 	ones = df[df['class'] == 1]['score']
 	zeros = df[df['class'] == 0]['score']
