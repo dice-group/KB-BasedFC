@@ -5,6 +5,7 @@ import logging as log
 import warnings
 import mapping
 import extract
+import normalization
 
 from nameko.rpc import rpc
 from time import time
@@ -164,10 +165,12 @@ class KnowledgeStream(object):
 				mincostflows, times = self.compute_mincostflow(self.G, self.relsim, sid, pid, oid)
 				# spo_df = self.normalize(spo_df)
 
+				normalizedScore = normalization.score(mincostflows)
+
 				log.info('Mincostflow computation complete. Time taken: {:.2f} secs.\n'.format(time() - t1))
 				result = '<http://swc2017.aksw.org/task2/dataset/s-' + str(
 					identification) + '> <http://swc2017.aksw.org/hasTruthValue>\"' + str(
-					mincostflows) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
+					normalizedScore) + '\"<http://www.w3.org/2001/XMLSchema#double> .'
 				print('The result in RDF format is:')
 				print(result)
 

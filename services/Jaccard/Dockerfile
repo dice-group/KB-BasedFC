@@ -1,5 +1,5 @@
 FROM enriozuni/docker_ubuntu_python27_gpp
-MAINTAINER Rakshit Krishnappa Ravi "rakshit@mail.uni-paderborn.de"
+MAINTAINER Enri Ozuni "enriozuni@hotmail.com"
 RUN mkdir jaccard
 COPY . /jaccard
 WORKDIR /jaccard

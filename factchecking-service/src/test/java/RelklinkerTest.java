@@ -21,6 +21,6 @@ public class RelklinkerTest {
 	@Test
 	public void testSingle() {
 		process.checkFact(fact);
-		assertEquals((double)0.1804169059852898, fact.getTruthValue(), 0.00001);
+		assertEquals((double)0.3469460480332239, fact.getTruthValue(), 0.00001);
 	}
 }

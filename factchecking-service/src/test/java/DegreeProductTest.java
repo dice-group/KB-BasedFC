@@ -21,6 +21,6 @@ public class DegreeProductTest {
 	@Test
 	public void testSingle() {
 		process.checkFact(fact);
-		assertEquals((double)8260, fact.getTruthValue(), 0.00001);
+		assertEquals((double)1.0, fact.getTruthValue(), 0.00001);
 	}
 }

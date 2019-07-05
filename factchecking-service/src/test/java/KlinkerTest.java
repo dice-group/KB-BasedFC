@@ -21,6 +21,6 @@ public class KlinkerTest {
 	@Test
 	public void testSingle() {
 		process.checkFact(fact);
-		assertEquals((double)0.11794212468875315, fact.getTruthValue(), 0.00001);
+		assertEquals((double)0.8267126457581233, fact.getTruthValue(), 0.00001);
 	}
 }

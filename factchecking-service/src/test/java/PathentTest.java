@@ -21,6 +21,6 @@ public class PathentTest {
 	@Test
 	public void testSingle() {
 		process.checkFact(fact);
-		assertEquals((double)2878.18272387978, fact.getTruthValue(), 0.00001);
+		assertEquals((double)0.7352093797305052, fact.getTruthValue(), 0.00001);
 	}
 }
