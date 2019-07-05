@@ -27,3 +27,13 @@ To run a specific service, go to the `services` subdirectory and inside one of t
 To build the Docker images and run the Docker containers altogether:<br>
 * Go to the `services` subdirectory and run the following command <br>
 ```docker-compose up```
+
+# Training the model for Predpath and PRA services
+
+ The microservice for PredPath and PRA algorithms requires a training model that has been trained and placed in `output` folder under the file `trained_model.pkl` for *predpath* and `trained_pra_model.pkl` for *PRA* in their respective folders.
+ 
+ If you wish to train the model with different set of records. You will have to run the following code. <br>
+```python ./predpath_service_training.py``` or ```python ./pra_service_training.py``` accordingly.
+
+**Note:** Change the path at line number *76* <br>
+`datafile = abspath(expanduser('./datasets/sample_data_predpath.csv'))` and make sure you are in their respective folders.
