@@ -33,27 +33,35 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 	private String kstreamContainer;
 	private String klinkerContainer;
 	private String relklinkerContainer;
+	private String predpathContainer;
+	private String praContainer;
+	private String katzContainer;
+	private String pathentContainer;
+	private String simrankContainer;
+	private String adamicadarContainer;
+	private String jaccardContainer;
+	private String degreeproductContainer;
 
 	@Override
 	public void init() throws Exception {
 
 		super.init();
 		LOGGER.debug("Init()");
-		
+
 		//Getting value of algorithm parameter from system.ttl
 		//FIXME read algorithm value from system.ttl and pass it to FC system
-        Property parameter;
-        NodeIterator objIterator;
-        ResIterator resIterator = systemParamModel.listResourcesWithProperty(RDF.type, HOBBIT.Parameter);
-        Property defaultValProperty = systemParamModel.getProperty(BenchmarkConstants.SYSTEM_URI + "#algorithm");
-        while (resIterator.hasNext()) {
-            parameter = systemParamModel.getProperty(resIterator.next().getURI());
-            objIterator = systemParamModel.listObjectsOfProperty(parameter, defaultValProperty);
-            while (objIterator.hasNext()) {
-                String value = objIterator.next().asLiteral().getString();
-                parameters.put(parameter.getLocalName(), value);
-            }
-        }
+		Property parameter;
+		NodeIterator objIterator;
+		ResIterator resIterator = systemParamModel.listResourcesWithProperty(RDF.type, HOBBIT.Parameter);
+		Property defaultValProperty = systemParamModel.getProperty(BenchmarkConstants.SYSTEM_URI + "#algorithm");
+		while (resIterator.hasNext()) {
+			parameter = systemParamModel.getProperty(resIterator.next().getURI());
+			objIterator = systemParamModel.listObjectsOfProperty(parameter, defaultValProperty);
+			while (objIterator.hasNext()) {
+				String value = objIterator.next().asLiteral().getString();
+				parameters.put(parameter.getLocalName(), value);
+			}
+		}
 
 		//Create rabbitmq container
 		rabbitmqContainer = createContainer(BenchmarkConstants.RABBITMQ_IMAGE_NAME, Constants.CONTAINER_TYPE_BENCHMARK,
@@ -95,6 +103,86 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 		} else
 			LOGGER.debug("Relklinker container created {}", relklinkerContainer);
 
+		//Create predpath container
+		predpathContainer = createContainer(BenchmarkConstants.PREDPATH_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (predpathContainer.isEmpty()) {
+			LOGGER.debug("Error while creating predpath container {}", predpathContainer);
+			throw new Exception("Predpath container not created");
+		} else
+			LOGGER.debug("Predpath container created {}", predpathContainer);
+
+		//Create pra container
+		praContainer = createContainer(BenchmarkConstants.PRA_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (praContainer.isEmpty()) {
+			LOGGER.debug("Error while creating pra container {}", praContainer);
+			throw new Exception("Pra container not created");
+		} else
+			LOGGER.debug("Pra container created {}", praContainer);
+
+		//Create katz container
+		katzContainer = createContainer(BenchmarkConstants.KATZ_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (katzContainer.isEmpty()) {
+			LOGGER.debug("Error while creating katz container {}", katzContainer);
+			throw new Exception("Katz container not created");
+		} else
+			LOGGER.debug("Katz container created {}", katzContainer);
+
+		//Create pathent container
+		pathentContainer = createContainer(BenchmarkConstants.PATHENT_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (pathentContainer.isEmpty()) {
+			LOGGER.debug("Error while creating pathent container {}", pathentContainer);
+			throw new Exception("Pathent container not created");
+		} else
+			LOGGER.debug("Pathent container created {}", pathentContainer);
+
+		//Create simrank container
+		simrankContainer = createContainer(BenchmarkConstants.SIMRANK_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (simrankContainer.isEmpty()) {
+			LOGGER.debug("Error while creating simrank container {}", simrankContainer);
+			throw new Exception("Simrank container not created");
+		} else
+			LOGGER.debug("Simrank container created {}", simrankContainer);
+
+		//Create adamicadar container
+		adamicadarContainer = createContainer(BenchmarkConstants.ADAMICADAR_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (adamicadarContainer.isEmpty()) {
+			LOGGER.debug("Error while creating adamicadar container {}", adamicadarContainer);
+			throw new Exception("AdamicAdar container not created");
+		} else
+			LOGGER.debug("AdamicAdar container created {}", adamicadarContainer);
+
+		//Create jaccard container
+		jaccardContainer = createContainer(BenchmarkConstants.JACCARD_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (jaccardContainer.isEmpty()) {
+			LOGGER.debug("Error while creating jaccard container {}", jaccardContainer);
+			throw new Exception("Jaccard container not created");
+		} else
+			LOGGER.debug("Jaccard container created {}", jaccardContainer);
+
+		//Create degreeproduct container
+		degreeproductContainer = createContainer(BenchmarkConstants.DEGREEPRODUCT_MICROSERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
+				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
+
+		if (degreeproductContainer.isEmpty()) {
+			LOGGER.debug("Error while creating degreeproduct container {}", degreeproductContainer);
+			throw new Exception("DegreeProduct container not created");
+		} else
+			LOGGER.debug("Jaccard container created {}", degreeproductContainer);
+
 		//Create factchecking-service container
 		factcheckingContainer = createContainer(BenchmarkConstants.FACTCHECKING_SERVICE_IMAGE_NAME, Constants.CONTAINER_TYPE_SYSTEM,
 				new String[]{"RABBITMQ_HOSTNAME=" + rabbitmqContainer});
@@ -108,8 +196,6 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 
 			LOGGER.debug("factchecking-service container accessible from {}", factcheckingContainerUrl);
 		}
-		
-		//TODO create containers of remaining microservices
 	}
 
 	@Override
@@ -168,6 +254,22 @@ public class FCSystemAdapter extends AbstractSystemAdapter {
 			stopContainer(klinkerContainer);
 		if (!relklinkerContainer.isEmpty())
 			stopContainer(relklinkerContainer);
+		if (!predpathContainer.isEmpty())
+			stopContainer(predpathContainer);
+		if (!praContainer.isEmpty())
+			stopContainer(praContainer);
+		if (!katzContainer.isEmpty())
+			stopContainer(katzContainer);
+		if (!pathentContainer.isEmpty())
+			stopContainer(pathentContainer);
+		if (!simrankContainer.isEmpty())
+			stopContainer(simrankContainer);
+		if (!adamicadarContainer.isEmpty())
+			stopContainer(adamicadarContainer);
+		if (!jaccardContainer.isEmpty())
+			stopContainer(jaccardContainer);
+		if (!degreeproductContainer.isEmpty())
+			stopContainer(degreeproductContainer);
 
 		super.close();
 	}
