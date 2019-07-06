@@ -73,7 +73,7 @@ public class RPCClient {
 			}
 		});
 
-		return response.poll(3000, TimeUnit.MILLISECONDS);
+		return response.poll(30000, TimeUnit.MILLISECONDS);
 	}
 
 	public void close() throws IOException {
