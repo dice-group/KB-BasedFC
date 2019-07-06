@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
@@ -72,7 +73,7 @@ public class RPCClient {
 			}
 		});
 
-		return response.take();
+		return response.poll(3000, TimeUnit.MILLISECONDS);
 	}
 
 	public void close() throws IOException {
