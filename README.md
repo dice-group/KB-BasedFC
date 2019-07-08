@@ -24,9 +24,17 @@ To run a specific service, go to the `services` subdirectory and inside one of t
 * For creating and running the Docker container from the created service image <br>
 ```docker container run -it --network="host" --name [<NAME_OF_CONTAINER] [NAME_OF_IMAGE]```
 
-To build the Docker images and run the Docker containers altogether:<br>
-* Go to the `services` subdirectory and run the following command <br>
-```docker-compose up```
+# Runing the frontend
+
+To run the frontend, go to the `factchecking-frontend` subdirectory:
+
+* For creating the Docker image of the frontend from the Dockerfile <br>
+```docker build -t [NAME_OF_IMAGE] .```
+
+* For creating and running the Docker container from the created frontend image <br>
+```docker container run -it --publish 8080:8080 --name [<NAME_OF_CONTAINER] [NAME_OF_IMAGE]```
+
+_*The Dockerfile for `factchecking-service` is not available_
 
 # Training the model for Predpath and PRA services
 
