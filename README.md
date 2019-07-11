@@ -37,3 +37,9 @@ To build the Docker images and run the Docker containers altogether:<br>
 
 **Note:** Change the path under *stream* function to that particular file location <br>
 `datafile = abspath(expanduser('./datasets/sample_data_predpath.csv'))` and make sure you are in their respective folders.
+
+# Example Triple
+
+**Subject URI :** `http://dbpedia.org/resource/Kobe_Bryant`<br>
+**Predicate URI :** `http://dbpedia.org/ontology/team`<br>
+**Object URI :** `http://dbpedia.org/resource/Los_Angeles_Lakers`
